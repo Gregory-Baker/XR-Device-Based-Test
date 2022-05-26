@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -18,7 +19,6 @@ public class SteamVRBasedControllerExample : XRBaseController
     public SteamVR_Action_Boolean activateAction = null;
     public SteamVR_Action_Boolean interfaceAction = null;
     public SteamVR_Action_Boolean targetSelectAction = null;
-    public SteamVR_Action_Boolean targetConfirmAction = null;
 
     public GameObject xrRayObject = null;
     private XRRayInteractor xrRayInteractor = null;
@@ -29,7 +29,21 @@ public class SteamVRBasedControllerExample : XRBaseController
     public float turnMultiplier = 20;
     float directionLast = 0;
 
-    public GameObject confirmTargetObject = null;
+    public SteamVR_Action_Boolean targetConfirmAction = null;
+    public delegate void ConfirmAction();
+    public static event ConfirmAction OnConfirm;
+
+    public SteamVR_Action_Boolean turnLeftAction = null;
+    public delegate void TurnLeftAction();
+    public static event TurnLeftAction OnTurnLeft;
+
+    public SteamVR_Action_Boolean turnRightAction = null;
+    public delegate void TurnRightAction();
+    public static event TurnLeftAction OnTurnRight;
+
+    public SteamVR_Action_Boolean stopAction = null;
+    public delegate void StopAction();
+    public static event TurnLeftAction OnStop;
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +63,9 @@ public class SteamVRBasedControllerExample : XRBaseController
         targetSelectAction[inputSource].onStateUp += disableTargetSelection;
         targetRotation[inputSource].onAxis += turnTargetToAxisDirection;
         targetConfirmAction[inputSource].onStateDown += confirmTarget;
-
+        turnLeftAction[inputSource].onStateDown += turnLeft;
+        turnRightAction[inputSource].onStateDown += turnRight;
+        stopAction[inputSource].onStateDown += stopRobot;
     }
 
 
@@ -59,6 +75,9 @@ public class SteamVRBasedControllerExample : XRBaseController
         targetSelectAction[inputSource].onStateDown -= disableTargetSelection;
         targetRotation[inputSource].onAxis -= turnTargetToAxisDirection;
         targetConfirmAction[inputSource].onStateDown -= confirmTarget;
+        turnLeftAction[inputSource].onStateDown -= turnLeft;
+        turnRightAction[inputSource].onStateDown -= turnRight;
+        stopAction[inputSource].onStateDown -= stopRobot;
     }
 
 
@@ -95,12 +114,37 @@ public class SteamVRBasedControllerExample : XRBaseController
 
     private void confirmTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (confirmTargetObject != null)
+
+        if (OnConfirm != null)
         {
-            confirmTargetObject.transform.SetPositionAndRotation(xrLineVisual.reticle.transform.position, xrLineVisual.reticle.transform.rotation);
+            OnConfirm();
         }
-        
     }
+
+    private void turnLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnTurnLeft != null)
+        {
+            OnTurnLeft();
+        }
+    }
+    private void turnRight(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnTurnRight != null)
+        {
+            OnTurnRight();
+        }
+    }
+
+    private void stopRobot(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnStop != null)
+        {
+            OnStop();
+        }
+    }
+
+
 
 
     protected override void UpdateTrackingInput(XRControllerState controllerState)

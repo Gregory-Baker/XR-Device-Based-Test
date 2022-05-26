@@ -8,6 +8,7 @@ TagManager:
   - HelpObject
   - FxTemporaire
   - zomBunny
+  - projectile
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - leftEye
+  - rightEye
   - 
   - 
   - tagInvisibleToZED
