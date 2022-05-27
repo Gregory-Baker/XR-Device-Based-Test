@@ -447,7 +447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7387613894710791152, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
       propertyPath: m_Acceleration
-      value: 20
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7387613894710791154, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
       propertyPath: m_Reticle
@@ -546,6 +546,23 @@ MonoBehaviour:
   turnAngle: 90
   objectName: base_link
   zed: {fileID: 114711246834645454}
+--- !u!114 &440489996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440489991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50ac3a653262dfd428e4820d61d54219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 0}
+  objectName: base_link
+  distanceThreshold: 0.3
+  angleThreshold: 0.3
+  zed: {fileID: 114711246834645454}
 --- !u!1 &444792418 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8814068741601111829, guid: bd62508bec06df046a84ceabeb57a59a, type: 3}
@@ -571,6 +588,23 @@ MonoBehaviour:
   unknownMaterial: {fileID: 2100000, guid: 5332e4e8658847144a9ab3126b92dc02, type: 2}
   unoccupiedMaterial: {fileID: 2100000, guid: dfc15869716dbcd44849f334b3ff242c, type: 2}
   occupiedMaterial: {fileID: 2100000, guid: 248741cee8a0d3443b6f07b9e571ec68, type: 2}
+--- !u!114 &444792423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444792418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50ac3a653262dfd428e4820d61d54219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 0}
+  objectName: base_link
+  distanceThreshold: 0.3
+  angleThreshold: 0.3
+  zed: {fileID: 114711246834645454}
 --- !u!1 &451850239
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,7 +889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7875312194979281479, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
       propertyPath: m_Acceleration
-      value: 20
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
