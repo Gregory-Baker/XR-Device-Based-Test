@@ -367,7 +367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 444792418}
-  goalTopicName: 
+  goalTopicName: move_base_simple/goal
   cancelGoalTopicName: move_base/cancel
   publishTarget: 1
   enableTurn: 1
@@ -533,7 +533,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440489991}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2418da108d6c3bb47bf65113f53644e3, type: 3}
   m_Name: 
@@ -598,7 +598,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451850239}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 255, z: -0}
+  m_LocalPosition: {x: 0, y: 257, z: -0}
   m_LocalScale: {x: 250.00003, y: 250.00005, z: 999.99994}
   m_Children: []
   m_Father: {fileID: 440489992}
@@ -950,7 +950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToTrack: {fileID: 0}
-  objectName: sensor_arch_mount_link
+  objectName: camera_mount_plate
   offset: {x: 0, y: -1, z: 0}
   zed: {fileID: 114711246834645454}
 --- !u!4 &1109852085
@@ -2549,7 +2549,7 @@ MonoBehaviour:
   m_textureConfidenceThreshold: 100
   enableRightDepthMeasure: 0
   showarrig: 0
-  enableIMUFusion: 0
+  enableIMUFusion: 1
   enableSelfCalibration: 1
   videoSettingsInitMode: 0
   videoBrightness: 4

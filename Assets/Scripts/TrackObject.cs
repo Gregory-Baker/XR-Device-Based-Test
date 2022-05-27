@@ -34,19 +34,21 @@ public class TrackObject : MonoBehaviour
         {
             objectToTrack = GameObject.Find(objectName);
             //transform.SetParent(objectToTrack.transform);
-            transform.localPosition = new Vector3(0, 0, 0);
+            //transform.localPosition = new Vector3(0, 0, 0);
         }
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (objectToTrack != null)
         {
-            Vector3 positionDifference = objectToTrack.transform.position - transform.position;
+            //Vector3 positionDifference = objectToTrack.transform.position - transform.position;
 
-            transform.Translate(positionDifference);
-            transform.Translate(offset);
+            //transform.Translate(positionDifference);
+            //transform.Translate(offset);
+
+            transform.SetPositionAndRotation(objectToTrack.transform.position + offset, objectToTrack.transform.rotation);
         }
     }
 }

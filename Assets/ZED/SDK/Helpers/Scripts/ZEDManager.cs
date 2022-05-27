@@ -2451,7 +2451,7 @@ public class ZEDManager : MonoBehaviour
 
                 arRig.ExtractLatencyPose(imageTimeStamp); //Find what HMD's pose was at ZED image's timestamp for latency compensation.
                 arRig.AdjustTrackingAR(zedPosition, zedOrientation, out r, out v, setIMUPriorInAR);
-                zedRigRoot.localRotation = r;
+                //zedRigRoot.localRotation = r;
                 //zedRigRoot.localPosition = v;
                 //Debug.DrawLine(new Vector3(0, 0.05f, 0), (r * Vector3.one * 5) + new Vector3(0, 0.05f, 0), Color.red);
                 //Debug.DrawLine(Vector3.zero, zedOrientation * Vector3.one * 5, Color.green);
