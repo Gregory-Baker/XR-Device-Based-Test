@@ -15,7 +15,7 @@ public class HideNearObject : MonoBehaviour
     float distanceThreshold = 0.3f;
 
     [SerializeField]
-    float angleThreshold = 0.3f;
+    float headingThreshold = 10f;
     
     [SerializeField]
     ZEDManager zed;
@@ -57,8 +57,9 @@ public class HideNearObject : MonoBehaviour
         if (targetObject != null)
         {
             float distanceToObject = (transform.position - targetObject.transform.position).magnitude;
-            // float angleToObject = transform.rotation - targetObject.transform.rotation).eulerAngles.magnitude
-            if (distanceToObject < distanceThreshold)
+            float headingDifference = Mathf.Abs(transform.rotation.eulerAngles.y - targetObject.transform.rotation.eulerAngles.y);
+
+            if ((distanceToObject < distanceThreshold) && (headingDifference < headingThreshold))
             {
                 foreach(MeshRenderer renderer in objectRenderers)
                 {
