@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class ValidTargetChecker : MonoBehaviour
 {
-    public Material unknownMaterial;
-    public Material unoccupiedMaterial;
-    public Material occupiedMaterial;
+    [SerializeField]
+    Material unknownMaterial;
+    [SerializeField]
+    Material unoccupiedMaterial;
+    [SerializeField]
+    Material occupiedMaterial;
 
     Material myMaterial;
 
@@ -37,17 +40,18 @@ public class ValidTargetChecker : MonoBehaviour
             pixelUV.y *= getTx.height;
             Color c = getTx.GetPixel((int)pixelUV.x, (int)pixelUV.y);
 
+            Debug.Log(c);
             if (c.r > 0.1)
             {
-                //myMaterial = occupiedMaterial;
+                myMaterial = occupiedMaterial;
             } else
             {
-                //myMaterial = unoccupiedMaterial;
+               myMaterial = unoccupiedMaterial;
             }
         }
         else
         {
-            Debug.Log("No Hit");
+            //Debug.Log("No Hit");
         }
 
 

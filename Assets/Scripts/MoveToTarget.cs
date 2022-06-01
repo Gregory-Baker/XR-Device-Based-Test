@@ -52,6 +52,11 @@ public class MoveToTarget : MonoBehaviour
         zed.OnZEDReady += SetStartPosition;
     }
 
+    private void Start()
+    {
+        // SetStartPosition();
+    }
+
     private void OnDisable()
     {
         SteamVRBasedControllerExample.OnConfirm -= ConfirmTargetPosition;
@@ -95,26 +100,38 @@ public class MoveToTarget : MonoBehaviour
 
     private void TurnLeft()
     {
-        targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
-        targetObject.transform.Rotate(targetObject.transform.up, -turnAngle);
-        transform.SetPositionAndRotation(targetObject.transform.position, targetObject.transform.rotation);
-        PublishTarget();
+        if (enableTurn)
+        {
+            targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
+            targetObject.transform.Rotate(targetObject.transform.up, -turnAngle);
+            transform.SetPositionAndRotation(targetObject.transform.position, targetObject.transform.rotation);
+            PublishTarget();
+        }
+
     }
 
     private void TurnRight()
     {
-        targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
-        targetObject.transform.Rotate(targetObject.transform.up, turnAngle);
-        transform.SetPositionAndRotation(targetObject.transform.position, targetObject.transform.rotation);
-        PublishTarget();
+        if (enableTurn)
+        {
+            targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
+            targetObject.transform.Rotate(targetObject.transform.up, turnAngle);
+            transform.SetPositionAndRotation(targetObject.transform.position, targetObject.transform.rotation);
+            PublishTarget();
+        }
     }
 
     private void StopRobot()
     {
         GoalIDMsg cancelGoal = new GoalIDMsg();
         ros.Publish(cancelGoalTopicName, cancelGoal);
+        MoveToBaseLink();
+        // PublishTarget();
+    }
+
+    private void MoveToBaseLink()
+    {
         targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
         transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
-        // PublishTarget();
     }
 }

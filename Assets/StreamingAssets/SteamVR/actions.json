@@ -1,139 +1,119 @@
 {
   "actions": [
     {
-      "name": "/actions/default/in/InteractUI",
+      "name": "/actions/base_movement/in/InteractUI",
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/Teleport",
+      "name": "/actions/base_movement/in/Teleport",
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/GrabPinch",
+      "name": "/actions/base_movement/in/GrabPinch",
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/GrabGrip",
+      "name": "/actions/base_movement/in/GrabGrip",
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/Pose",
+      "name": "/actions/base_movement/in/Pose",
       "type": "pose"
     },
     {
-      "name": "/actions/default/in/SkeletonLeftHand",
+      "name": "/actions/base_movement/in/SkeletonLeftHand",
       "type": "skeleton",
       "skeleton": "/skeleton/hand/left"
     },
     {
-      "name": "/actions/default/in/SkeletonRightHand",
+      "name": "/actions/base_movement/in/SkeletonRightHand",
       "type": "skeleton",
       "skeleton": "/skeleton/hand/right"
     },
     {
-      "name": "/actions/default/in/Squeeze",
+      "name": "/actions/base_movement/in/Squeeze",
       "type": "vector1",
       "requirement": "optional"
     },
     {
-      "name": "/actions/default/in/HeadsetOnHead",
+      "name": "/actions/base_movement/in/HeadsetOnHead",
       "type": "boolean",
       "requirement": "optional"
     },
     {
-      "name": "/actions/default/in/SnapTurnLeft",
+      "name": "/actions/base_movement/in/SnapTurnLeft",
       "type": "boolean",
       "requirement": "suggested"
     },
     {
-      "name": "/actions/default/in/SnapTurnRight",
+      "name": "/actions/base_movement/in/SnapTurnRight",
       "type": "boolean"
     },
     {
-      "name": "/actions/default/in/ThumbXY",
+      "name": "/actions/base_movement/in/ThumbXY",
       "type": "vector2"
     },
     {
-      "name": "/actions/default/out/Haptic",
+      "name": "/actions/base_movement/in/changeActionSet",
+      "type": "boolean",
+      "requirement": "suggested"
+    },
+    {
+      "name": "/actions/base_movement/out/Haptic",
       "type": "vibration"
     },
     {
-      "name": "/actions/platformer/in/Move",
+      "name": "/actions/arm_movement/in/armZRotation",
       "type": "vector2"
     },
     {
-      "name": "/actions/platformer/in/Jump",
+      "name": "/actions/arm_movement/in/armUp",
       "type": "boolean"
     },
     {
-      "name": "/actions/buggy/in/Steering",
+      "name": "/actions/arm_movement/in/armDown",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/changeActionSet",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/armXY",
       "type": "vector2"
     },
     {
-      "name": "/actions/buggy/in/Throttle",
-      "type": "vector1"
-    },
-    {
-      "name": "/actions/buggy/in/Brake",
+      "name": "/actions/arm_movement/in/armXYEnable",
       "type": "boolean"
     },
     {
-      "name": "/actions/buggy/in/Reset",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/mixedreality/in/ExternalCamera",
-      "type": "pose",
-      "requirement": "optional"
-    },
-    {
-      "name": "/actions/zed-default/in/Grab",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/zed-default/in/Pose",
+      "name": "/actions/arm_movement/in/pose",
       "type": "pose"
     },
     {
-      "name": "/actions/zed-default/in/NavigateUI",
+      "name": "/actions/arm_movement/in/scroll",
       "type": "vector2"
     },
     {
-      "name": "/actions/zed-default/in/Click",
-      "type": "boolean"
+      "name": "/actions/common_controls/in/Pose",
+      "type": "pose"
     },
     {
-      "name": "/actions/zed-default/in/Back",
+      "name": "/actions/common_controls/in/ChangeActionSet",
       "type": "boolean"
-    },
-    {
-      "name": "/actions/zed-default/in/Fire",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/zed-default/out/Haptic",
-      "type": "vibration"
     }
   ],
   "action_sets": [
     {
-      "name": "/actions/default",
+      "name": "/actions/base_movement",
       "usage": "single"
     },
     {
-      "name": "/actions/platformer",
+      "name": "/actions/arm_movement",
       "usage": "single"
     },
     {
-      "name": "/actions/buggy",
-      "usage": "single"
-    },
-    {
-      "name": "/actions/mixedreality",
-      "usage": "single"
-    },
-    {
-      "name": "/actions/zed-default",
+      "name": "/actions/common_controls",
       "usage": "single"
     }
   ],
@@ -193,24 +173,7 @@
   ],
   "localization": [
     {
-      "language_tag": "en_US",
-      "/actions/default/in/GrabGrip": "Grab Grip",
-      "/actions/default/in/GrabPinch": "Grab Pinch",
-      "/actions/default/in/HeadsetOnHead": "Headset on head (proximity sensor)",
-      "/actions/default/in/InteractUI": "Interact With UI",
-      "/actions/default/in/Pose": "Pose",
-      "/actions/default/in/SkeletonLeftHand": "Skeleton (Left)",
-      "/actions/default/in/SkeletonRightHand": "Skeleton (Right)",
-      "/actions/default/in/Teleport": "Teleport",
-      "/actions/default/out/Haptic": "Haptic",
-      "/actions/platformer/in/Jump": "Jump",
-      "/actions/default/in/SnapTurnLeft": "Snap Turn (Left)",
-      "/actions/default/in/SnapTurnRight": "Snap Turn (Right)",
-      "/actions/zed-default/in/Fire": "Fire",
-      "/actions/zed-default/in/Back": "Back",
-      "/actions/zed-default/in/Click": "Click",
-      "/actions/zed-default/in/Grab": "Grab",
-      "/actions/zed-default/in/NavigateUI": "NavigateUI"
+      "language_tag": "en_US"
     }
   ]
 }

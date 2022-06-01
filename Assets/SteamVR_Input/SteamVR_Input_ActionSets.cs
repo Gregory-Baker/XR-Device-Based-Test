@@ -17,69 +17,45 @@ namespace Valve.VR
     public partial class SteamVR_Actions
     {
         
-        private static SteamVR_Input_ActionSet_default p__default;
+        private static SteamVR_Input_ActionSet_base_movement p_base_movement;
         
-        private static SteamVR_Input_ActionSet_platformer p_platformer;
+        private static SteamVR_Input_ActionSet_arm_movement p_arm_movement;
         
-        private static SteamVR_Input_ActionSet_buggy p_buggy;
+        private static SteamVR_Input_ActionSet_common_controls p_common_controls;
         
-        private static SteamVR_Input_ActionSet_mixedreality p_mixedreality;
-        
-        private static SteamVR_Input_ActionSet_zed_default p_zed_default;
-        
-        public static SteamVR_Input_ActionSet_default _default
+        public static SteamVR_Input_ActionSet_base_movement base_movement
         {
             get
             {
-                return SteamVR_Actions.p__default.GetCopy<SteamVR_Input_ActionSet_default>();
+                return SteamVR_Actions.p_base_movement.GetCopy<SteamVR_Input_ActionSet_base_movement>();
             }
         }
         
-        public static SteamVR_Input_ActionSet_platformer platformer
+        public static SteamVR_Input_ActionSet_arm_movement arm_movement
         {
             get
             {
-                return SteamVR_Actions.p_platformer.GetCopy<SteamVR_Input_ActionSet_platformer>();
+                return SteamVR_Actions.p_arm_movement.GetCopy<SteamVR_Input_ActionSet_arm_movement>();
             }
         }
         
-        public static SteamVR_Input_ActionSet_buggy buggy
+        public static SteamVR_Input_ActionSet_common_controls common_controls
         {
             get
             {
-                return SteamVR_Actions.p_buggy.GetCopy<SteamVR_Input_ActionSet_buggy>();
-            }
-        }
-        
-        public static SteamVR_Input_ActionSet_mixedreality mixedreality
-        {
-            get
-            {
-                return SteamVR_Actions.p_mixedreality.GetCopy<SteamVR_Input_ActionSet_mixedreality>();
-            }
-        }
-        
-        public static SteamVR_Input_ActionSet_zed_default zed_default
-        {
-            get
-            {
-                return SteamVR_Actions.p_zed_default.GetCopy<SteamVR_Input_ActionSet_zed_default>();
+                return SteamVR_Actions.p_common_controls.GetCopy<SteamVR_Input_ActionSet_common_controls>();
             }
         }
         
         private static void StartPreInitActionSets()
         {
-            SteamVR_Actions.p__default = ((SteamVR_Input_ActionSet_default)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_default>("/actions/default")));
-            SteamVR_Actions.p_platformer = ((SteamVR_Input_ActionSet_platformer)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_platformer>("/actions/platformer")));
-            SteamVR_Actions.p_buggy = ((SteamVR_Input_ActionSet_buggy)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_buggy>("/actions/buggy")));
-            SteamVR_Actions.p_mixedreality = ((SteamVR_Input_ActionSet_mixedreality)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_mixedreality>("/actions/mixedreality")));
-            SteamVR_Actions.p_zed_default = ((SteamVR_Input_ActionSet_zed_default)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_zed_default>("/actions/zed-default")));
+            SteamVR_Actions.p_base_movement = ((SteamVR_Input_ActionSet_base_movement)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_base_movement>("/actions/base_movement")));
+            SteamVR_Actions.p_arm_movement = ((SteamVR_Input_ActionSet_arm_movement)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_arm_movement>("/actions/arm_movement")));
+            SteamVR_Actions.p_common_controls = ((SteamVR_Input_ActionSet_common_controls)(SteamVR_ActionSet.Create<SteamVR_Input_ActionSet_common_controls>("/actions/common_controls")));
             Valve.VR.SteamVR_Input.actionSets = new Valve.VR.SteamVR_ActionSet[] {
-                    SteamVR_Actions._default,
-                    SteamVR_Actions.platformer,
-                    SteamVR_Actions.buggy,
-                    SteamVR_Actions.mixedreality,
-                    SteamVR_Actions.zed_default};
+                    SteamVR_Actions.base_movement,
+                    SteamVR_Actions.arm_movement,
+                    SteamVR_Actions.common_controls};
         }
     }
 }

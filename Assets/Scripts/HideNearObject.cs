@@ -51,28 +51,40 @@ public class HideNearObject : MonoBehaviour
         }
     }
 
+    public void HideObjectAndChildren()
+    {
+        foreach (MeshRenderer renderer in objectRenderers)
+        {
+            renderer.enabled = false;
+        }
+    }
+
+
+    public void ShowObjectAndChildren()
+    {
+        foreach (MeshRenderer renderer in objectRenderers)
+        {
+            renderer.enabled = true;
+        }
+    }
+
+
     // Update is called once per frame
     void Update()
     {
-        if (targetObject != null)
+        if (ActionSetHandler.controlSet == ActionSetHandler.CurrentControlSet.Base && targetObject != null)
         {
             float distanceToObject = (transform.position - targetObject.transform.position).magnitude;
             float headingDifference = Mathf.Abs(transform.rotation.eulerAngles.y - targetObject.transform.rotation.eulerAngles.y);
 
             if ((distanceToObject < distanceThreshold) && (headingDifference < headingThreshold))
             {
-                foreach(MeshRenderer renderer in objectRenderers)
-                {
-                    renderer.enabled = false;
-                }
-                
+
+                HideObjectAndChildren();
             }
             else
             {
-                foreach (MeshRenderer renderer in objectRenderers)
-                {
-                    renderer.enabled = true;
-                }
+                ShowObjectAndChildren();
             }
         }
     }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using Valve.VR;
@@ -45,6 +47,10 @@ public class SteamVRBasedControllerExample : XRBaseController
     public delegate void StopAction();
     public static event TurnLeftAction OnStop;
 
+    //[Header("Change Action Set")]
+    //public ChangeActionSet changeActionSetEvent;
+    //public SteamVR_Action_Boolean changeActionSetAction;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,7 +72,9 @@ public class SteamVRBasedControllerExample : XRBaseController
         turnLeftAction[inputSource].onStateDown += turnLeft;
         turnRightAction[inputSource].onStateDown += turnRight;
         stopAction[inputSource].onStateDown += stopRobot;
+        //changeActionSetAction[inputSource].onStateDown += changeActionSet;
     }
+
 
 
     private void OnDestroy()
@@ -78,8 +86,39 @@ public class SteamVRBasedControllerExample : XRBaseController
         turnLeftAction[inputSource].onStateDown -= turnLeft;
         turnRightAction[inputSource].onStateDown -= turnRight;
         stopAction[inputSource].onStateDown -= stopRobot;
+        //changeActionSetAction[inputSource].onStateDown -= changeActionSet;
     }
 
+    //private void changeActionSet(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    //{
+    //    changeActionSetEvent.TriggerEvent();
+    //}
+
+
+
+
+    //private void activateBaseControl(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    //{
+    //    if(Time.time - timeSinceChange > actionSetCoolOffTime)
+    //    {
+    //        baseControlActive = true;
+    //        baseControlActionSet.Activate(disableAllOtherActionSets: true);
+    //        // ChangeActionSet.Invoke();
+    //        timeSinceChange = Time.time;
+    //    }
+    //}
+
+    //private void activateArmControl(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    //{
+    //    changeActionSet.TriggerEvent();
+    //    if (Time.time - timeSinceChange  > actionSetCoolOffTime)
+    //    {
+    //        baseControlActive = false;
+    //        armControlActionSet.Activate(disableAllOtherActionSets: true);
+    //        // ChangeActionSet.Invoke();
+    //        timeSinceChange = Time.time;
+    //    }
+    //}
 
     private void disableTargetSelection(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {

@@ -87,6 +87,15 @@ MonoBehaviour:
   stopAction:
     actionPath: 
     needsReinit: 0
+  activateArmControlAction:
+    actionPath: 
+    needsReinit: 0
+  activateBaseControlAction:
+    actionPath: 
+    needsReinit: 0
+  ChangeActionSet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7875312194979281475
 GameObject:
   m_ObjectHideFlags: 0
