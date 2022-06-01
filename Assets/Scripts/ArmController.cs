@@ -6,13 +6,12 @@ using RosMessageTypes.KortexDriver;
 using Valve.VR;
 using System;
 
-public class ArmVelocityPublisher : MonoBehaviour
+public class ArmController : MonoBehaviour
 {
     ROSConnection ros;
 
     [Header("SteamVR Tracking")]
     public SteamVR_Input_Sources inputSource = SteamVR_Input_Sources.Any;
-    public SteamVR_Action_Pose poseAction = null;
 
     public SteamVR_Action_Vector2 xyInput;
     public SteamVR_Action_Boolean enableMove;
@@ -36,6 +35,7 @@ public class ArmVelocityPublisher : MonoBehaviour
 
     float lastInputTime;
 
+    bool pub_message = false;
 
     // Start is called before the first frame update
     void Start()
@@ -72,19 +72,19 @@ public class ArmVelocityPublisher : MonoBehaviour
         timeElapsed += Time.deltaTime;
         if (timeElapsed > publishMessageFrequency)
         {
-            if(Time.time - lastInputTime < 0.3f)
+            if(Time.time - lastInputTime < 0.1f)
             {
                 TwistCommandMsg twistCmd = new TwistCommandMsg();
                 twistCmd.twist.linear_x = xVel;
                 twistCmd.twist.linear_y = yVel;
                 ros.Publish(topicName, twistCmd);
+                pub_message = true;
 
-            } else
+            } else if (pub_message)
             {
                 ros.Publish(topicName, new TwistCommandMsg());
-            }
-
-
+                pub_message = false;
+            } 
         }
     }
 }

@@ -1359,6 +1359,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZED_Rig_Stereo
       objectReference: {fileID: 0}
+    - target: {fileID: 1603769914748404, guid: e13ee7e0790c7d243b7aa67fe604acac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4309805032874704, guid: e13ee7e0790c7d243b7aa67fe604acac, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -1430,6 +1434,76 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7387613894144286386, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
   m_PrefabInstance: {fileID: 7387613895543383839}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1561505885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1561505888}
+  - component: {fileID: 1561505887}
+  - component: {fileID: 1561505886}
+  m_Layer: 0
+  m_Name: SteamVR Loader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1561505886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561505885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27991c206a5e66147bb8ee3ef31c8bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionSet:
+    actionSetPath: /actions/base_movement
+  forSources: 0
+  disableAllOtherActionSets: 0
+  activateOnStart: 1
+  deactivateOnDestroy: 1
+  initialPriority: 0
+--- !u!114 &1561505887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561505885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27991c206a5e66147bb8ee3ef31c8bac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionSet:
+    actionSetPath: /actions/common_controls
+  forSources: 0
+  disableAllOtherActionSets: 0
+  activateOnStart: 1
+  deactivateOnDestroy: 1
+  initialPriority: 0
+--- !u!4 &1561505888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561505885}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -196.5546, y: -82.43798, z: 56.801525}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1622908820 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5676844083343288596, guid: 2e2240f7729bc374da409ac501409d89, type: 3}
@@ -1915,6 +1989,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 324876885}
     m_Modifications:
+    - target: {fileID: 7387613894144286382, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
+      propertyPath: poseAction.actionPath
+      value: /actions/common_controls/in/Pose
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387613894144286382, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
+      propertyPath: selectAction.actionPath
+      value: /actions/base_movement/in/Teleport
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387613894144286382, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
+      propertyPath: activateAction.actionPath
+      value: /actions/base_movement/in/GrabPinch
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387613894144286382, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
+      propertyPath: interfaceAction.actionPath
+      value: /actions/base_movement/in/InteractUI
+      objectReference: {fileID: 0}
     - target: {fileID: 7387613894144286386, guid: 84aae84b0e0af7149ae9a2bdf37e8755, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -1988,6 +2078,22 @@ PrefabInstance:
       propertyPath: confirmTargetObject
       value: 
       objectReference: {fileID: 1622908820}
+    - target: {fileID: 7875312194902198634, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
+      propertyPath: poseAction.actionPath
+      value: /actions/common_controls/in/Pose
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875312194902198634, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
+      propertyPath: selectAction.actionPath
+      value: /actions/base_movement/in/Teleport
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875312194902198634, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
+      propertyPath: activateAction.actionPath
+      value: /actions/base_movement/in/GrabPinch
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875312194902198634, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
+      propertyPath: interfaceAction.actionPath
+      value: /actions/base_movement/in/InteractUI
+      objectReference: {fileID: 0}
     - target: {fileID: 7875312194902198635, guid: 18a61363ce74fa445b1234245cb278ab, type: 3}
       propertyPath: m_RootOrder
       value: 2

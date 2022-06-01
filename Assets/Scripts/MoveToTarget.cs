@@ -44,10 +44,10 @@ public class MoveToTarget : MonoBehaviour
         ros.RegisterPublisher<PoseStampedMsg>(goalTopicName);
         ros.RegisterPublisher<GoalIDMsg>(cancelGoalTopicName);
 
-        SteamVRBasedControllerExample.OnConfirm += ConfirmTargetPosition;
-        SteamVRBasedControllerExample.OnTurnLeft += TurnLeft;
-        SteamVRBasedControllerExample.OnTurnRight += TurnRight;
-        SteamVRBasedControllerExample.OnStop += StopRobot;
+        BaseController.OnConfirm += ConfirmTargetPosition;
+        BaseController.OnTurnLeft += TurnLeft;
+        BaseController.OnTurnRight += TurnRight;
+        BaseController.OnStop += StopRobot;
 
         zed.OnZEDReady += SetStartPosition;
     }
@@ -59,10 +59,10 @@ public class MoveToTarget : MonoBehaviour
 
     private void OnDisable()
     {
-        SteamVRBasedControllerExample.OnConfirm -= ConfirmTargetPosition;
-        SteamVRBasedControllerExample.OnTurnLeft -= TurnLeft;
-        SteamVRBasedControllerExample.OnTurnRight -= TurnRight;
-        SteamVRBasedControllerExample.OnStop -= StopRobot;
+        BaseController.OnConfirm -= ConfirmTargetPosition;
+        BaseController.OnTurnLeft -= TurnLeft;
+        BaseController.OnTurnRight -= TurnRight;
+        BaseController.OnStop -= StopRobot;
 
         zed.OnZEDReady -= SetStartPosition;
     }
