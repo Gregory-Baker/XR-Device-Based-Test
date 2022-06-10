@@ -66,36 +66,6 @@ MonoBehaviour:
   interfaceAction:
     actionPath: /actions/default/in/GrabGrip
     needsReinit: 0
-  targetSelectAction:
-    actionPath: /actions/default/in/Teleport
-    needsReinit: 0
-  xrRayObject: {fileID: 7387613894710791156}
-  targetRotation:
-    actionPath: /actions/default/in/ThumbXY
-    needsReinit: 0
-  directionTolerance: 0.1
-  turnMultiplier: 10
-  targetConfirmAction:
-    actionPath: /actions/default/in/GrabPinch
-    needsReinit: 0
-  turnLeftAction:
-    actionPath: 
-    needsReinit: 0
-  turnRightAction:
-    actionPath: 
-    needsReinit: 0
-  stopAction:
-    actionPath: 
-    needsReinit: 0
-  activateArmControlAction:
-    actionPath: 
-    needsReinit: 0
-  activateBaseControlAction:
-    actionPath: 
-    needsReinit: 0
-  ChangeActionSet:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7387613894710791156
 GameObject:
   m_ObjectHideFlags: 0

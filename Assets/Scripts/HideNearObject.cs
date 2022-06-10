@@ -16,40 +16,28 @@ public class HideNearObject : MonoBehaviour
 
     [SerializeField]
     float headingThreshold = 10f;
-    
-    [SerializeField]
-    ZEDManager zed;
 
     MeshRenderer[] objectRenderers;
 
     void Start ()
     {
-        if (zed == null)
-        {
-            zed = FindObjectOfType<ZEDManager>();
-        }
-
         objectRenderers = GetComponentsInChildren<MeshRenderer>();
     }
 
     private void OnEnable()
     {
-        zed.OnZEDReady += AssignTarget;
+        StartCoroutine(SetTrackingObject());
     }
 
-    private void OnDisable()
+    IEnumerator SetTrackingObject()
     {
-        zed.OnZEDReady += AssignTarget;
-    }
-
-
-    private void AssignTarget()
-    {
-        if (targetObject == null)
+        while (targetObject == null)
         {
             targetObject = GameObject.Find(objectName);
+            yield return new WaitForSeconds(0.5f);
         }
     }
+
 
     public void HideObjectAndChildren()
     {
@@ -74,7 +62,7 @@ public class HideNearObject : MonoBehaviour
     {
         if (ActionSetHandler.controlSet == ActionSetHandler.CurrentControlSet.Base && targetObject != null)
         {
-            float distanceToObject = (transform.position - targetObject.transform.position).magnitude;
+            float distanceToObject = Vector3.Distance(transform.position, targetObject.transform.position);
             float headingDifference = Mathf.Abs(transform.rotation.eulerAngles.y - targetObject.transform.rotation.eulerAngles.y);
 
             if ((distanceToObject < distanceThreshold) && (headingDifference < headingThreshold))

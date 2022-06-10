@@ -1,0 +1,108 @@
+========================================================================================================================
+-------------------------------------------------------- BIO IK --------------------------------------------------------
+========================================================================================================================
+Hello! First of all, thank you for your interest and trust in this asset! I hope (and believe!) you will not be disappointed. :)
+
+Everything you need are the 'KinematicJoint' as well as the 'IKSolver' and 'Objective' scripts. I suggest you take a look at the
+various demo scenes. Although they should be quite self-explanatory, I also provide a short step-by-step tutorial below. :)
+If you are happy with this asset, please let me know! If you use it for scientific research or related purposes, I'd be glad 
+if you reference my corresponding publications on my website. If you have any questions or suggestions for improvements, 
+just contact me. If you experience any bugs or unexpected behaviour - please let me know! I will fix it as soon as possible 
+since I'm very interested in consistently improving this asset. Hence, further updates will frequently come! :)
+
+--- HOW TO SETUP YOUR KINEMATIC MODEL ---
+    #Step 1: Provide an arbitrary model with a hierarchical structure of game objects.
+    #Step 2: Add a 'Kinematic Joint' component to each game object within the kinematic chain that shall be able to move.
+    #Step 4: If desired, adjust the maximum velocity and maximum acceleration. If you want instantaneous movement, use "Instantaneous" mode and you won't need to modify anything.
+    #Step 5: Add the 'IKSolver' component to the desired base of your model. This manages solving the inverse kinematics for
+        multiple kinematic chains. If you have multiple independent chains, it makes sense to use multiple independent solvers.
+    #Step 6: Add an 'Objective' component to each game object for which the IK problem shall be constrained. Note that multiple
+        objective constraints can be considered simultaneously, but will naturally increase the complexity in optimisation. You can also
+        adjust individual weights for objective in the 'IKSolver' component.
+    #Step 6: If not already done, assign the target transforms to the 'Objective' components.
+    #Step 8: Everything should be fine now. Go play around! :)
+
+--- PARAMETERS ---
+    ===IKSolver Component===
+    Maximum Frame Time:
+        Limit the maximum time per frame you want to offer for optimisation. Thus, this allows you to maintain your desired frame rates.
+    Population Size:
+        This is the number of individuals (solutions) that are heuristically created and evolved (recombination, mutation,
+        adoption) during each evolutionary generation (iteration). This number should always be significantly higher than the elitist individuals.
+    Elites:
+        This is the number of individuals that are currently most successfull among the population. Those are tracked and are
+        exploited to track multiple solutions (local extrema) simultaneously. 1 Elite will cause strictly unimodal solutions
+        but might get stuck in suboptimal extrema. Multiple elites are likely to cause small fluctuations due to multimodal optimisation.
+        For simple kinematic structure, a combination like 12-4 or 15-1 should work well. For rather complex geometries, solutions like
+        40-1 or 25-3 might be more appropriate.
+    Objective Weights:
+        Some objectives might be more important to you, so you can assign individual weights for each.
+
+    ===KinematicJoint Component===
+    ---Important: Note that the KinematicJoint controls the built-in Transform component of Unity---
+    Geometry:
+        Type:
+            Revolute - Rotational Joint with Limits
+            Continuous - Rotational Joint without Limits
+            Prismatic - Translational Joint with Limits
+        Anchor:
+            The connected anchor to which the motion is relative to.
+        Orientation:
+            The orientation of the motion relative to the connected body.
+	Default Frame:
+	    This is the reference transformation for computing relative joint motion.
+        Motion Type:
+            Realistic - Creates smooth motion to the target configuration depending on acceleration and velocity.
+            Instantaneous - Immediately assigns the target configuration.
+	Smoothing:
+	    Adds some smoothing for position and rotation between the solved postures. This can be used to elimininate small fluctuations, if they occur, but also to create an overall better look.
+        Animation Weight:
+	    This factor weights animation into solving IK by manipulating the reference frame and then by post-modulating the animation. Hence, 0 = zero animation added and 1 = full animation added into IK.
+            Note that this factor also shifts the predefined joint limits in direction of the animation offset.
+            
+	Animation Blend:
+	    This factor blends between the animation posture and the evolved IK posture, where 0 = IK posture and 1 = animation posture.
+
+    X/Y/Z Motion:
+        Enabled: Is this joint fixed or free? 
+        Lower Limit:
+            Assign a lower limit for this joint.
+        Upper Limit:
+            Assign an upper limit for this joint.
+        Target Value:
+            This value is controlled by the IKSolver, but you can also individually set this value if you want. :)
+
+    ===Objective Component===
+        Weight:
+            How important is this objective for the optimisation?
+        ---Position---
+            This objective optimises a given target position with XYZ coordinates. The target can either be a transform or a Vector3.
+            The maximum error is the threshold for which a solution is considered as converged for this objective.
+        ---Orientation---
+            This objective optimises a given target orientation. The target can either be a transform or a Quaternion.
+            The maximum error is the threshold for which a solution is considered as converged for this objective.
+        ---LookAt---
+            This objective optimises a target by looking into its direction relative to the objective. The target can either be a transform or a Vector3.
+            The direction vector is defined relative to the objective. The maximum error is the threshold for which a solution is considered as converged for this objective.
+        ---Distance--- (beta development)
+            This objective ensures that the distance from the objective to the target becomes not lower than the given distance threshold.
+        ---Displacement--- (beta development)
+            This objective aims to achieve minimal joint value changes during optimisation, and thus to avoid fluctuations or larger posture changes.
+            Note that the weight should typically be chosen comparatively small.
+        ---JointValue--- (beta development)
+            This objective aims to maintain given joint value for a specific joint.
+        ---Projection--- (beta development)
+            This objective projects a transform onto the surface with respect to the normal vector and the projection distance. (Will be integrated into position and orientation soon)
+
+
+========================================================================================================================
+--------------------------------------------------- ADDITIONAL NOTES ---------------------------------------------------
+========================================================================================================================
+#1 - Please avoid non-uniform scaling. It's the root of all evil and might destroy the IK solutions. The implemented FK solver does
+     not consider this mainly for performance reasons.
+#2 - The 'Maximum Frame Time' parameter implicitely controls the number of iterations per frame. Hence, allowing more time
+     will result in more accurate solutions as well as more robust convergence with fewer fluctuations. I believe limiting
+     the available time rather than specifing a fixed number of iterations is more suitable for most applications.
+#3 - BioIK will soon come as a one-script approach, which involves large improvements in several usability aspects.
+#4 - BIO IK NOW USES THREADING - IF YOU ARE USING THE HOLOLENS ON WINDOWS, THERE MIGHT BE SOME ISSUES. IN THIS CASE, PLEASE CONTACT ME!
+========================================================================================================================

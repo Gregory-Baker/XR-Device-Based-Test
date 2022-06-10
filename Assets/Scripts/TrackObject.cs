@@ -7,48 +7,51 @@ using UnityEngine.UIElements;
 public class TrackObject : MonoBehaviour
 {
     [SerializeField]
-    GameObject objectToTrack;
+    GameObject objectToTrack = null;
 
     [SerializeField]
     string objectName;
 
     [SerializeField]
-    Vector3 offset = new Vector3(0, 0, 0);
+    Vector3 positionOffset = Vector3.zero;
 
     [SerializeField]
-    ZEDManager zed = null;
+    float rotationOffset = 0f;
+
+    [SerializeField]
+    bool everyFrame = true;
 
     private void OnEnable()
     {
-        zed.OnZEDReady += SetTrackingObject;
+        StartCoroutine(SetTrackingObject());
     }
 
-    private void OnDisable()
+    IEnumerator SetTrackingObject()
     {
-        zed.OnZEDReady -= SetTrackingObject;
-    }
-
-    private void SetTrackingObject()
-    {
-        if (objectToTrack == null)
+        while (objectToTrack == null)
         {
             objectToTrack = GameObject.Find(objectName);
-            //transform.SetParent(objectToTrack.transform);
-            //transform.localPosition = new Vector3(0, 0, 0);
+            yield return new WaitForSeconds(0.5f);
         }
+        MoveToTarget();
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
+        if (everyFrame == true)
+        {
+            MoveToTarget();
+        }
+    }
+
+    public void MoveToTarget()
+    {
         if (objectToTrack != null)
         {
-            //Vector3 positionDifference = objectToTrack.transform.position - transform.position;
-
-            //transform.Translate(positionDifference);
-            //transform.Translate(offset);
-
-            transform.SetPositionAndRotation(objectToTrack.transform.position + offset, objectToTrack.transform.rotation);
+            transform.SetPositionAndRotation(objectToTrack.transform.position, objectToTrack.transform.rotation);
+            transform.Translate(positionOffset, Space.Self);
+            transform.Rotate(transform.up, rotationOffset);
         }
     }
 }

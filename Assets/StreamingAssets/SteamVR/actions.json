@@ -101,6 +101,18 @@
     {
       "name": "/actions/common_controls/in/ChangeActionSet",
       "type": "boolean"
+    },
+    {
+      "name": "/actions/common_controls/in/Select",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/common_controls/in/Activate",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/common_controls/in/Interface",
+      "type": "boolean"
     }
   ],
   "action_sets": [

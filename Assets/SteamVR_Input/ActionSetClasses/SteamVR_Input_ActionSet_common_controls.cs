@@ -32,5 +32,29 @@ namespace Valve.VR
                 return SteamVR_Actions.common_controls_ChangeActionSet;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean Select
+        {
+            get
+            {
+                return SteamVR_Actions.common_controls_Select;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean Activate
+        {
+            get
+            {
+                return SteamVR_Actions.common_controls_Activate;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean Interface
+        {
+            get
+            {
+                return SteamVR_Actions.common_controls_Interface;
+            }
+        }
     }
 }
