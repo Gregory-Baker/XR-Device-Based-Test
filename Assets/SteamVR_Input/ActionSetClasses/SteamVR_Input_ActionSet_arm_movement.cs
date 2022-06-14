@@ -17,51 +17,11 @@ namespace Valve.VR
     public class SteamVR_Input_ActionSet_arm_movement : Valve.VR.SteamVR_ActionSet
     {
         
-        public virtual SteamVR_Action_Vector2 armZRotation
+        public virtual SteamVR_Action_Vector2 targetZRotation
         {
             get
             {
-                return SteamVR_Actions.arm_movement_armZRotation;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean armUp
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_armUp;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean armDown
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_armDown;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean changeActionSet
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_changeActionSet;
-            }
-        }
-        
-        public virtual SteamVR_Action_Vector2 armXY
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_armXY;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean armXYEnable
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_armXYEnable;
+                return SteamVR_Actions.arm_movement_targetZRotation;
             }
         }
         
@@ -73,11 +33,27 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Vector2 scroll
+        public virtual SteamVR_Action_Boolean targetConfirm
         {
             get
             {
-                return SteamVR_Actions.arm_movement_scroll;
+                return SteamVR_Actions.arm_movement_targetConfirm;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean increaseTargetDistance
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_increaseTargetDistance;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean decreaseTargetDistance
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_decreaseTargetDistance;
             }
         }
     }

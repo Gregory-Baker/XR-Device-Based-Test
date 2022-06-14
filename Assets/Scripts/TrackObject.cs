@@ -19,7 +19,7 @@ public class TrackObject : MonoBehaviour
     float rotationOffset = 0f;
 
     [SerializeField]
-    bool everyFrame = true;
+    bool moveEveryFrame = true;
 
     private void OnEnable()
     {
@@ -39,7 +39,7 @@ public class TrackObject : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (everyFrame == true)
+        if (moveEveryFrame)
         {
             MoveToTarget();
         }

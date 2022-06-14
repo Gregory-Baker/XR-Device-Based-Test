@@ -46,7 +46,7 @@ public class BaseController : MonoBehaviour
         targetSelectAction[inputSource].onStateDown += enableTargetSelection;
         targetSelectAction[inputSource].onStateUp += disableTargetSelection;
 
-        targetRotation[inputSource].onAxis += turnTargetToAxisDirection;
+        targetRotation[inputSource].onAxis += turnTarget;
         targetConfirmAction[inputSource].onStateDown += confirmTarget;
         turnLeftAction[inputSource].onStateDown += turnLeft;
         turnRightAction[inputSource].onStateDown += turnRight;
@@ -59,7 +59,7 @@ public class BaseController : MonoBehaviour
         targetSelectAction[inputSource].onStateDown -= enableTargetSelection;
         targetSelectAction[inputSource].onStateDown -= disableTargetSelection;
 
-        targetRotation[inputSource].onAxis -= turnTargetToAxisDirection;
+        targetRotation[inputSource].onAxis -= turnTarget;
         targetConfirmAction[inputSource].onStateDown -= confirmTarget;
         turnLeftAction[inputSource].onStateDown -= turnLeft;
         turnRightAction[inputSource].onStateDown -= turnRight;
@@ -82,12 +82,11 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    private void turnTargetToAxisDirection(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
+    private void turnTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
-        if (targetRotation != null && targetRotation[inputSource].axis.magnitude > 0)
+        if (axis.magnitude > 0)
         {
             float direction = -Mathf.Atan2(targetRotation[inputSource].axis.y, targetRotation[inputSource].axis.x);
-            // targetSelectionObject.reticle.transform.localEulerAngles = new Vector3(0, Mathf.Rad2Deg * direction, 0);
             float directionDelta = direction - directionLast;
             if (Mathf.Abs(directionDelta) < Mathf.PI && Mathf.Abs(directionDelta) > directionTolerance && targetSelectAction[inputSource].state != true)
             {

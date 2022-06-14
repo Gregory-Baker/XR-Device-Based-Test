@@ -33,17 +33,32 @@ public class ActionSetHandler : MonoBehaviour
         changeActionSetAction[SteamVR_Input_Sources.Any].onStateDown += changeActionSet;
     }
 
+    private void Start()
+    {
+        LoadBaseController();
+    }
+
+    public void LoadArmController()
+    {
+        loadArmControllerEvent.TriggerEvent();
+        controlSet = CurrentControlSet.Arm;
+    }
+
+    public void LoadBaseController()
+    {
+        loadBaseControllerEvent.TriggerEvent();
+        controlSet = CurrentControlSet.Base;
+    }
+
     private void changeActionSet(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         switch (controlSet)
         {
             case CurrentControlSet.Base:
-                loadArmControllerEvent.TriggerEvent();
-                controlSet = CurrentControlSet.Arm;
+                LoadArmController();
                 break;
             case CurrentControlSet.Arm:
-                loadBaseControllerEvent.TriggerEvent();
-                controlSet = CurrentControlSet.Base;
+                LoadBaseController();
                 break;
             default:
                 throw new Exception("Undefined controller state");

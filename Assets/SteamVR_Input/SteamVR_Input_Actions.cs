@@ -45,21 +45,15 @@ namespace Valve.VR
         
         private static SteamVR_Action_Vibration p_base_movement_Haptic;
         
-        private static SteamVR_Action_Vector2 p_arm_movement_armZRotation;
-        
-        private static SteamVR_Action_Boolean p_arm_movement_armUp;
-        
-        private static SteamVR_Action_Boolean p_arm_movement_armDown;
-        
-        private static SteamVR_Action_Boolean p_arm_movement_changeActionSet;
-        
-        private static SteamVR_Action_Vector2 p_arm_movement_armXY;
-        
-        private static SteamVR_Action_Boolean p_arm_movement_armXYEnable;
+        private static SteamVR_Action_Vector2 p_arm_movement_targetZRotation;
         
         private static SteamVR_Action_Pose p_arm_movement_pose;
         
-        private static SteamVR_Action_Vector2 p_arm_movement_scroll;
+        private static SteamVR_Action_Boolean p_arm_movement_targetConfirm;
+        
+        private static SteamVR_Action_Boolean p_arm_movement_increaseTargetDistance;
+        
+        private static SteamVR_Action_Boolean p_arm_movement_decreaseTargetDistance;
         
         private static SteamVR_Action_Pose p_common_controls_Pose;
         
@@ -183,51 +177,11 @@ namespace Valve.VR
             }
         }
         
-        public static SteamVR_Action_Vector2 arm_movement_armZRotation
+        public static SteamVR_Action_Vector2 arm_movement_targetZRotation
         {
             get
             {
-                return SteamVR_Actions.p_arm_movement_armZRotation.GetCopy<SteamVR_Action_Vector2>();
-            }
-        }
-        
-        public static SteamVR_Action_Boolean arm_movement_armUp
-        {
-            get
-            {
-                return SteamVR_Actions.p_arm_movement_armUp.GetCopy<SteamVR_Action_Boolean>();
-            }
-        }
-        
-        public static SteamVR_Action_Boolean arm_movement_armDown
-        {
-            get
-            {
-                return SteamVR_Actions.p_arm_movement_armDown.GetCopy<SteamVR_Action_Boolean>();
-            }
-        }
-        
-        public static SteamVR_Action_Boolean arm_movement_changeActionSet
-        {
-            get
-            {
-                return SteamVR_Actions.p_arm_movement_changeActionSet.GetCopy<SteamVR_Action_Boolean>();
-            }
-        }
-        
-        public static SteamVR_Action_Vector2 arm_movement_armXY
-        {
-            get
-            {
-                return SteamVR_Actions.p_arm_movement_armXY.GetCopy<SteamVR_Action_Vector2>();
-            }
-        }
-        
-        public static SteamVR_Action_Boolean arm_movement_armXYEnable
-        {
-            get
-            {
-                return SteamVR_Actions.p_arm_movement_armXYEnable.GetCopy<SteamVR_Action_Boolean>();
+                return SteamVR_Actions.p_arm_movement_targetZRotation.GetCopy<SteamVR_Action_Vector2>();
             }
         }
         
@@ -239,11 +193,27 @@ namespace Valve.VR
             }
         }
         
-        public static SteamVR_Action_Vector2 arm_movement_scroll
+        public static SteamVR_Action_Boolean arm_movement_targetConfirm
         {
             get
             {
-                return SteamVR_Actions.p_arm_movement_scroll.GetCopy<SteamVR_Action_Vector2>();
+                return SteamVR_Actions.p_arm_movement_targetConfirm.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean arm_movement_increaseTargetDistance
+        {
+            get
+            {
+                return SteamVR_Actions.p_arm_movement_increaseTargetDistance.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean arm_movement_decreaseTargetDistance
+        {
+            get
+            {
+                return SteamVR_Actions.p_arm_movement_decreaseTargetDistance.GetCopy<SteamVR_Action_Boolean>();
             }
         }
         
@@ -304,14 +274,11 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_ThumbXY,
                     SteamVR_Actions.base_movement_changeActionSet,
                     SteamVR_Actions.base_movement_Haptic,
-                    SteamVR_Actions.arm_movement_armZRotation,
-                    SteamVR_Actions.arm_movement_armUp,
-                    SteamVR_Actions.arm_movement_armDown,
-                    SteamVR_Actions.arm_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armXY,
-                    SteamVR_Actions.arm_movement_armXYEnable,
+                    SteamVR_Actions.arm_movement_targetZRotation,
                     SteamVR_Actions.arm_movement_pose,
-                    SteamVR_Actions.arm_movement_scroll,
+                    SteamVR_Actions.arm_movement_targetConfirm,
+                    SteamVR_Actions.arm_movement_increaseTargetDistance,
+                    SteamVR_Actions.arm_movement_decreaseTargetDistance,
                     SteamVR_Actions.common_controls_Pose,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
@@ -331,14 +298,11 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_SnapTurnRight,
                     SteamVR_Actions.base_movement_ThumbXY,
                     SteamVR_Actions.base_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armZRotation,
-                    SteamVR_Actions.arm_movement_armUp,
-                    SteamVR_Actions.arm_movement_armDown,
-                    SteamVR_Actions.arm_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armXY,
-                    SteamVR_Actions.arm_movement_armXYEnable,
+                    SteamVR_Actions.arm_movement_targetZRotation,
                     SteamVR_Actions.arm_movement_pose,
-                    SteamVR_Actions.arm_movement_scroll,
+                    SteamVR_Actions.arm_movement_targetConfirm,
+                    SteamVR_Actions.arm_movement_increaseTargetDistance,
+                    SteamVR_Actions.arm_movement_decreaseTargetDistance,
                     SteamVR_Actions.common_controls_Pose,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
@@ -361,10 +325,9 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_SnapTurnLeft,
                     SteamVR_Actions.base_movement_SnapTurnRight,
                     SteamVR_Actions.base_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armUp,
-                    SteamVR_Actions.arm_movement_armDown,
-                    SteamVR_Actions.arm_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armXYEnable,
+                    SteamVR_Actions.arm_movement_targetConfirm,
+                    SteamVR_Actions.arm_movement_increaseTargetDistance,
+                    SteamVR_Actions.arm_movement_decreaseTargetDistance,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
                     SteamVR_Actions.common_controls_Activate,
@@ -373,9 +336,7 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_Squeeze};
             Valve.VR.SteamVR_Input.actionsVector2 = new Valve.VR.SteamVR_Action_Vector2[] {
                     SteamVR_Actions.base_movement_ThumbXY,
-                    SteamVR_Actions.arm_movement_armZRotation,
-                    SteamVR_Actions.arm_movement_armXY,
-                    SteamVR_Actions.arm_movement_scroll};
+                    SteamVR_Actions.arm_movement_targetZRotation};
             Valve.VR.SteamVR_Input.actionsVector3 = new Valve.VR.SteamVR_Action_Vector3[0];
             Valve.VR.SteamVR_Input.actionsSkeleton = new Valve.VR.SteamVR_Action_Skeleton[] {
                     SteamVR_Actions.base_movement_SkeletonLeftHand,
@@ -391,13 +352,10 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_SnapTurnRight,
                     SteamVR_Actions.base_movement_ThumbXY,
                     SteamVR_Actions.base_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armZRotation,
-                    SteamVR_Actions.arm_movement_armUp,
-                    SteamVR_Actions.arm_movement_armDown,
-                    SteamVR_Actions.arm_movement_changeActionSet,
-                    SteamVR_Actions.arm_movement_armXY,
-                    SteamVR_Actions.arm_movement_armXYEnable,
-                    SteamVR_Actions.arm_movement_scroll,
+                    SteamVR_Actions.arm_movement_targetZRotation,
+                    SteamVR_Actions.arm_movement_targetConfirm,
+                    SteamVR_Actions.arm_movement_increaseTargetDistance,
+                    SteamVR_Actions.arm_movement_decreaseTargetDistance,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
                     SteamVR_Actions.common_controls_Activate,
@@ -420,14 +378,11 @@ namespace Valve.VR
             SteamVR_Actions.p_base_movement_ThumbXY = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/base_movement/in/ThumbXY")));
             SteamVR_Actions.p_base_movement_changeActionSet = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/base_movement/in/changeActionSet")));
             SteamVR_Actions.p_base_movement_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/base_movement/out/Haptic")));
-            SteamVR_Actions.p_arm_movement_armZRotation = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/arm_movement/in/armZRotation")));
-            SteamVR_Actions.p_arm_movement_armUp = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/armUp")));
-            SteamVR_Actions.p_arm_movement_armDown = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/armDown")));
-            SteamVR_Actions.p_arm_movement_changeActionSet = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/changeActionSet")));
-            SteamVR_Actions.p_arm_movement_armXY = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/arm_movement/in/armXY")));
-            SteamVR_Actions.p_arm_movement_armXYEnable = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/armXYEnable")));
+            SteamVR_Actions.p_arm_movement_targetZRotation = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/arm_movement/in/targetZRotation")));
             SteamVR_Actions.p_arm_movement_pose = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/arm_movement/in/pose")));
-            SteamVR_Actions.p_arm_movement_scroll = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/arm_movement/in/scroll")));
+            SteamVR_Actions.p_arm_movement_targetConfirm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/targetConfirm")));
+            SteamVR_Actions.p_arm_movement_increaseTargetDistance = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/increaseTargetDistance")));
+            SteamVR_Actions.p_arm_movement_decreaseTargetDistance = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/decreaseTargetDistance")));
             SteamVR_Actions.p_common_controls_Pose = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/common_controls/in/Pose")));
             SteamVR_Actions.p_common_controls_ChangeActionSet = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/common_controls/in/ChangeActionSet")));
             SteamVR_Actions.p_common_controls_Select = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/common_controls/in/Select")));

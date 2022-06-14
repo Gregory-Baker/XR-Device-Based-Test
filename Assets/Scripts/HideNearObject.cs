@@ -3,26 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideNearObject : MonoBehaviour
+public class HideNearObject : ChangeObjectVisibility
 {
     [SerializeField]
-    GameObject targetObject;
+    protected GameObject targetObject;
 
     [SerializeField]
-    string objectName;
+    protected string objectName;
 
     [SerializeField]
-    float distanceThreshold = 0.3f;
+    protected float distanceThreshold = 0.3f;
 
     [SerializeField]
-    float headingThreshold = 10f;
-
-    MeshRenderer[] objectRenderers;
-
-    void Start ()
-    {
-        objectRenderers = GetComponentsInChildren<MeshRenderer>();
-    }
+    protected float headingThreshold = 10f;
 
     private void OnEnable()
     {
@@ -35,24 +28,6 @@ public class HideNearObject : MonoBehaviour
         {
             targetObject = GameObject.Find(objectName);
             yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-
-    public void HideObjectAndChildren()
-    {
-        foreach (MeshRenderer renderer in objectRenderers)
-        {
-            renderer.enabled = false;
-        }
-    }
-
-
-    public void ShowObjectAndChildren()
-    {
-        foreach (MeshRenderer renderer in objectRenderers)
-        {
-            renderer.enabled = true;
         }
     }
 

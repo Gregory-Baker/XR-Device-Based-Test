@@ -63,36 +63,24 @@
       "type": "vibration"
     },
     {
-      "name": "/actions/arm_movement/in/armZRotation",
+      "name": "/actions/arm_movement/in/targetZRotation",
       "type": "vector2"
-    },
-    {
-      "name": "/actions/arm_movement/in/armUp",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/arm_movement/in/armDown",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/arm_movement/in/changeActionSet",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/arm_movement/in/armXY",
-      "type": "vector2"
-    },
-    {
-      "name": "/actions/arm_movement/in/armXYEnable",
-      "type": "boolean"
     },
     {
       "name": "/actions/arm_movement/in/pose",
       "type": "pose"
     },
     {
-      "name": "/actions/arm_movement/in/scroll",
-      "type": "vector2"
+      "name": "/actions/arm_movement/in/targetConfirm",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/increaseTargetDistance",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/decreaseTargetDistance",
+      "type": "boolean"
     },
     {
       "name": "/actions/common_controls/in/Pose",
