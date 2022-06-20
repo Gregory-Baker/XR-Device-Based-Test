@@ -1,10 +1,6 @@
 {
   "actions": [
     {
-      "name": "/actions/base_movement/in/InteractUI",
-      "type": "boolean"
-    },
-    {
       "name": "/actions/base_movement/in/Teleport",
       "type": "boolean"
     },
@@ -19,16 +15,6 @@
     {
       "name": "/actions/base_movement/in/Pose",
       "type": "pose"
-    },
-    {
-      "name": "/actions/base_movement/in/SkeletonLeftHand",
-      "type": "skeleton",
-      "skeleton": "/skeleton/hand/left"
-    },
-    {
-      "name": "/actions/base_movement/in/SkeletonRightHand",
-      "type": "skeleton",
-      "skeleton": "/skeleton/hand/right"
     },
     {
       "name": "/actions/base_movement/in/Squeeze",
@@ -54,11 +40,6 @@
       "type": "vector2"
     },
     {
-      "name": "/actions/base_movement/in/changeActionSet",
-      "type": "boolean",
-      "requirement": "suggested"
-    },
-    {
       "name": "/actions/base_movement/out/Haptic",
       "type": "vibration"
     },
@@ -80,6 +61,14 @@
     },
     {
       "name": "/actions/arm_movement/in/decreaseTargetDistance",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/changeControlMode",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/actuateGripper",
       "type": "boolean"
     },
     {

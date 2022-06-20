@@ -5,7 +5,7 @@ using UnityEngine;
 public class ChangeObjectVisibility : MonoBehaviour
 {
 
-    protected bool hidden = false;
+    public bool hidden = false;
 
     MeshRenderer[] objectRenderers;
 

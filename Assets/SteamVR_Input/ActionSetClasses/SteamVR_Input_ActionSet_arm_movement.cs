@@ -56,5 +56,21 @@ namespace Valve.VR
                 return SteamVR_Actions.arm_movement_decreaseTargetDistance;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean changeControlMode
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_changeControlMode;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean actuateGripper
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_actuateGripper;
+            }
+        }
     }
 }

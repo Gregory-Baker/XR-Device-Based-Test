@@ -17,14 +17,6 @@ namespace Valve.VR
     public class SteamVR_Input_ActionSet_base_movement : Valve.VR.SteamVR_ActionSet
     {
         
-        public virtual SteamVR_Action_Boolean InteractUI
-        {
-            get
-            {
-                return SteamVR_Actions.base_movement_InteractUI;
-            }
-        }
-        
         public virtual SteamVR_Action_Boolean Teleport
         {
             get
@@ -54,22 +46,6 @@ namespace Valve.VR
             get
             {
                 return SteamVR_Actions.base_movement_Pose;
-            }
-        }
-        
-        public virtual SteamVR_Action_Skeleton SkeletonLeftHand
-        {
-            get
-            {
-                return SteamVR_Actions.base_movement_SkeletonLeftHand;
-            }
-        }
-        
-        public virtual SteamVR_Action_Skeleton SkeletonRightHand
-        {
-            get
-            {
-                return SteamVR_Actions.base_movement_SkeletonRightHand;
             }
         }
         
@@ -110,14 +86,6 @@ namespace Valve.VR
             get
             {
                 return SteamVR_Actions.base_movement_ThumbXY;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean changeActionSet
-        {
-            get
-            {
-                return SteamVR_Actions.base_movement_changeActionSet;
             }
         }
         
