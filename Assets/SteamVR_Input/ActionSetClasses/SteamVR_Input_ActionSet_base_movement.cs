@@ -89,6 +89,14 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Vector2 StrafeTarget
+        {
+            get
+            {
+                return SteamVR_Actions.base_movement_StrafeTarget;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

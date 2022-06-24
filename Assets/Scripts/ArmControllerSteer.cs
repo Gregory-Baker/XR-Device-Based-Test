@@ -9,18 +9,18 @@ public class ArmControllerSteer : MonoBehaviour
 {
     public enum ControlMode
     {
-        UpDown,
+        UpDownRotate,
         ForwardBackLeftRight,
-        RotateZ
+        Place
     }
 
     [HideInInspector]
-    public ControlMode controlMode = ControlMode.UpDown;
+    public ControlMode controlMode = ControlMode.UpDownRotate;
 
     public GameObject targetObject;
-    public GameObject upArrows;
+    public GameObject upRotateArrows;
     public GameObject fblrArrows;
-    public GameObject rotationArrows;
+    public GameObject placeVerticalAxis;
 
     [Header("SteamVR Inputs")]
     public SteamVR_Input_Sources inputSource = SteamVR_Input_Sources.Any;
@@ -29,11 +29,12 @@ public class ArmControllerSteer : MonoBehaviour
     public SteamVR_Action_Boolean actuateGripper = null;
     public SteamVR_Action_Vector2 moveTarget = null;
 
-    float axisThreshold = 0.2f;
+    public float axisThreshold = 0.5f;
     public float moveDistance = 0.01f;
     public float directionTolerance = 0.01f;
     public float turnAngle = 0.05f;
     float directionLast = 0;
+    float yAxisLast = 0;
 
     public UnityEvent onConfirmTargetEvents;
     public UnityEvent onActuateGripperEvents;
@@ -68,7 +69,7 @@ public class ArmControllerSteer : MonoBehaviour
 
     private void ChangeControlMode(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        controlMode = (controlMode != ControlMode.RotateZ) ? controlMode + 1 : 0;
+        controlMode = (controlMode != ControlMode.Place) ? controlMode + 1 : 0;
 
         ShowArrows();
 
@@ -80,14 +81,14 @@ public class ArmControllerSteer : MonoBehaviour
         {
             switch (controlMode)
             {
-                case ControlMode.UpDown:
+                case ControlMode.UpDownRotate:
+                    turnTarget(axis);
                     moveTargetUpDown(axis);
                     break;
                 case ControlMode.ForwardBackLeftRight:
                     moveTargetFBLR(axis);
                     break;
-                case ControlMode.RotateZ:
-                    turnTarget(axis);
+                case ControlMode.Place:
                     break;
             }
         }
@@ -101,40 +102,59 @@ public class ArmControllerSteer : MonoBehaviour
 
     private void moveTargetUpDown(Vector2 axis)
     {
-        Vector3 translation = new Vector3(0, axis.y * moveDistance, 0);
+        if (Mathf.Abs(axis.y) > axisThreshold) {
+            Vector3 translation = new Vector3(0, axis.y * moveDistance, 0);
+            targetObject.transform.Translate(translation, Space.World);
+        }
+    }
+
+    private void moveTargetUpDown(Vector2 axis, Vector2 delta)
+    {
+        Vector3 translation = new Vector3(0, delta.y * moveDistance, 0);
         targetObject.transform.Translate(translation, Space.World);
     }
 
+    //private bool turnTarget(Vector2 axis)
+    //{
+    //    bool turned = false;
+    //    float direction = Mathf.Atan2(axis.y, axis.x);
+    //    float directionDelta = direction - directionLast;
+    //    if (Mathf.Abs(directionDelta) < Mathf.PI && Mathf.Abs(directionDelta) > directionTolerance)
+    //    {
+    //        targetObject.transform.Rotate(new Vector3(0, Mathf.Sign(directionDelta) * turnAngle / Time.deltaTime, 0));
+    //        fblrArrows.transform.Rotate(new Vector3(0, -Mathf.Sign(directionDelta) * turnAngle / Time.deltaTime, 0));
+    //        turned = true;
+    //    }
+    //    directionLast = direction;
+    //    return turned;
+    //}
+
     private void turnTarget(Vector2 axis)
     {
-        float direction = Mathf.Atan2(axis.y, axis.x);
-        float directionDelta = direction - directionLast;
-        if (Mathf.Abs(directionDelta) < Mathf.PI && Mathf.Abs(directionDelta) > directionTolerance)
+        if (Mathf.Abs(axis.x) > axisThreshold)
         {
-            targetObject.transform.Rotate(new Vector3(0, Mathf.Sign(directionDelta) * turnAngle / Time.deltaTime, 0));
-            fblrArrows.transform.Rotate(new Vector3(0, -Mathf.Sign(directionDelta) * turnAngle / Time.deltaTime, 0));
+            targetObject.transform.Rotate(new Vector3(0, -axis.x * turnAngle / Time.deltaTime, 0));
         }
-        directionLast = direction;
     }
 
     public void ShowArrows()
     {
         switch (controlMode)
         {
-            case ControlMode.UpDown:
-                upArrows.SetActive(true);
+            case ControlMode.UpDownRotate:
+                upRotateArrows.SetActive(true);
                 fblrArrows.SetActive(false);
-                rotationArrows.SetActive(false);
+                placeVerticalAxis.SetActive(false);
                 break;
             case ControlMode.ForwardBackLeftRight:
-                upArrows.SetActive(false);
+                upRotateArrows.SetActive(false);
                 fblrArrows.SetActive(true);
-                rotationArrows.SetActive(false);
+                placeVerticalAxis.SetActive(false);
                 break;
-            case ControlMode.RotateZ:
-                upArrows.SetActive(false);
+            case ControlMode.Place:
+                upRotateArrows.SetActive(false);
                 fblrArrows.SetActive(false);
-                rotationArrows.SetActive(true);
+                placeVerticalAxis.SetActive(true);
                 break;
         }
     }

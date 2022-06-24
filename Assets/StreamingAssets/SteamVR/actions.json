@@ -40,6 +40,10 @@
       "type": "vector2"
     },
     {
+      "name": "/actions/base_movement/in/StrafeTarget",
+      "type": "vector2"
+    },
+    {
       "name": "/actions/base_movement/out/Haptic",
       "type": "vibration"
     },
@@ -70,6 +74,18 @@
     {
       "name": "/actions/arm_movement/in/actuateGripper",
       "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/ActivateMenu",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/Select",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/MenuSelectionPosition",
+      "type": "vector2"
     },
     {
       "name": "/actions/common_controls/in/Pose",

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 using UnityEngine.XR.Interaction.Toolkit;
+using System;
 
 public class BaseController : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class BaseController : MonoBehaviour
     public float turnMultiplier = 20;
     float directionLast = 0;
 
+    public SteamVR_Action_Vector2 strafeTargetAction = null;
+
     public SteamVR_Action_Boolean targetConfirmAction = null;
     public delegate void ConfirmAction();
     public static event ConfirmAction OnConfirm;
@@ -28,6 +31,14 @@ public class BaseController : MonoBehaviour
     public SteamVR_Action_Boolean turnLeftAction = null;
     public delegate void TurnLeftAction();
     public static event TurnLeftAction OnTurnLeft;
+
+    //public SteamVR_Action_Boolean nudgeForwardAction = null;
+    public delegate void NudgeForwardAction();
+    public static event NudgeForwardAction OnNudgeForward;
+
+    //public SteamVR_Action_Boolean nudgeBackwardAction = null;
+    public delegate void NudgeBackwardAction();
+    public static event NudgeBackwardAction OnNudgeBackward;
 
     public SteamVR_Action_Boolean turnRightAction = null;
     public delegate void TurnRightAction();
@@ -47,9 +58,12 @@ public class BaseController : MonoBehaviour
         targetSelectAction[inputSource].onStateUp += disableTargetSelection;
 
         targetRotation[inputSource].onAxis += turnTarget;
+        strafeTargetAction[inputSource].onAxis += strafeTarget;
         targetConfirmAction[inputSource].onStateDown += confirmTarget;
         turnLeftAction[inputSource].onStateDown += turnLeft;
         turnRightAction[inputSource].onStateDown += turnRight;
+        //nudgeForwardAction[inputSource].onStateDown += nudgeForward;
+        //nudgeBackwardAction[inputSource].onStateDown += nudgeBackward;
         stopAction[inputSource].onStateDown += stopRobot;
     }
 
@@ -60,11 +74,16 @@ public class BaseController : MonoBehaviour
         targetSelectAction[inputSource].onStateDown -= disableTargetSelection;
 
         targetRotation[inputSource].onAxis -= turnTarget;
+        strafeTargetAction[inputSource].onAxis -= strafeTarget;
         targetConfirmAction[inputSource].onStateDown -= confirmTarget;
         turnLeftAction[inputSource].onStateDown -= turnLeft;
         turnRightAction[inputSource].onStateDown -= turnRight;
+        //nudgeForwardAction[inputSource].onStateDown -= nudgeForward;
+        //nudgeBackwardAction[inputSource].onStateDown -= nudgeBackward;
         stopAction[inputSource].onStateDown -= stopRobot;
     }
+
+
 
     private void disableTargetSelection(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
@@ -117,6 +136,65 @@ public class BaseController : MonoBehaviour
         if (OnTurnRight != null)
         {
             OnTurnRight();
+        }
+    }
+
+    private void nudgeForward(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnNudgeForward != null)
+        {
+            OnNudgeForward();
+        }
+    }
+
+    private void nudgeBackward(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnNudgeBackward != null)
+        {
+            OnNudgeBackward();
+        }
+    }
+
+    private void strafeTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
+    {
+        //float moveDistance = 0.3f * Time.deltaTime;
+        //Vector3 translation = Vector3.zero;
+
+        //if (Mathf.Abs(axis.x) > 0.5)
+        //{
+        //    translation.x += axis.x * moveDistance;
+        //}
+
+        //if (Mathf.Abs(axis.y) > 0.5)
+        //{
+        //    translation.z += axis.y * moveDistance;
+        //}
+
+        //xrLineVisual.reticle.transform.Translate(translation, Space.Self);
+        // targetObject.transform.Translate(translation, targetObject.transform.parent);
+
+        turnRobot(axis);
+        moveRobotForwardBack(axis);
+    }
+
+    private void moveRobotForwardBack(Vector2 axis)
+    {
+        if (Mathf.Abs(axis.y) > 0.5)
+        {
+            float moveSpeed = 0.3f;
+            Vector3 translation = new Vector3(0, 0, axis.y * moveSpeed * Time.deltaTime);
+            xrLineVisual.reticle.transform.Translate(translation, Space.Self);
+        }
+    }
+
+
+
+    private void turnRobot(Vector2 axis)
+    {
+        if (Mathf.Abs(axis.x) > 0.5)
+        {
+            float turnSpeed = 30.0f;
+            xrLineVisual.reticle.transform.Rotate(new Vector3(0, axis.x * turnSpeed * Time.deltaTime, 0));
         }
     }
 

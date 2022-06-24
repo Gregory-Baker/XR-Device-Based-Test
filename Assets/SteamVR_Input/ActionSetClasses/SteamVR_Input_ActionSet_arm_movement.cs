@@ -72,5 +72,29 @@ namespace Valve.VR
                 return SteamVR_Actions.arm_movement_actuateGripper;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean ActivateMenu
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_ActivateMenu;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean Select
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_Select;
+            }
+        }
+        
+        public virtual SteamVR_Action_Vector2 MenuSelectionPosition
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_MenuSelectionPosition;
+            }
+        }
     }
 }
