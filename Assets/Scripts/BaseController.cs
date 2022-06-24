@@ -48,6 +48,9 @@ public class BaseController : MonoBehaviour
     public delegate void StopAction();
     public static event TurnLeftAction OnStop;
 
+    [Header("External Objects")]
+    public RosHeadRotationPublisher panTiltPublisher;
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -157,24 +160,18 @@ public class BaseController : MonoBehaviour
 
     private void strafeTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
-        //float moveDistance = 0.3f * Time.deltaTime;
-        //Vector3 translation = Vector3.zero;
-
-        //if (Mathf.Abs(axis.x) > 0.5)
-        //{
-        //    translation.x += axis.x * moveDistance;
-        //}
-
-        //if (Mathf.Abs(axis.y) > 0.5)
-        //{
-        //    translation.z += axis.y * moveDistance;
-        //}
-
-        //xrLineVisual.reticle.transform.Translate(translation, Space.Self);
-        // targetObject.transform.Translate(translation, targetObject.transform.parent);
-
         turnRobot(axis);
+        turnCamera(axis);
         moveRobotForwardBack(axis);
+    }
+
+    private void turnCamera(Vector2 axis)
+    {
+        if (Mathf.Abs(axis.x) > 0.5)
+        {
+            float turnSpeed = 30.0f;
+            panTiltPublisher.panOffset += axis.x * turnSpeed * Time.deltaTime;
+        }
     }
 
     private void moveRobotForwardBack(Vector2 axis)

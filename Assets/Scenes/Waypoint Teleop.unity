@@ -479,6 +479,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topicName: head_rot
   publishMessageFrequency: 0.02
+  panOffset: 0
+  tiltOffset: 0
 --- !u!1 &144702563
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,6 +627,7 @@ MonoBehaviour:
   stopAction:
     actionPath: /actions/base_movement/in/GrabGrip
     needsReinit: 0
+  panTiltPublisher: {fileID: 143899852}
 --- !u!1 &179167374
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,11 +1652,13 @@ MonoBehaviour:
   targetObject: {fileID: 444792418}
   goalTopicName: move_base_simple/goal
   cancelGoalTopicName: move_base_flex/move_base/cancel
+  moveBaseActionResultTopicName: move_base_flex/move_base/result
   publishTarget: 1
   enableTurn: 1
   turnAngle: 90
-  objectName: base_link
-  zed: {fileID: 114711246834645454}
+  panTiltPublisher: {fileID: 143899852}
+  robotBaseLink: {fileID: 0}
+  moveBaseActionStatus: 2
 --- !u!114 &440489996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2826,6 +2831,7 @@ MonoBehaviour:
   stopAction:
     actionPath: /actions/base_movement/in/GrabGrip
     needsReinit: 0
+  panTiltPublisher: {fileID: 143899852}
 --- !u!114 &732233894
 MonoBehaviour:
   m_ObjectHideFlags: 0

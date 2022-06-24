@@ -15,6 +15,9 @@ public class RosHeadRotationPublisher : MonoBehaviour
     public float publishMessageFrequency = 0f;
     private float timeElapsed;
 
+    public float panOffset = 0;
+    public float tiltOffset = 0;
+
     private PanTiltAngleMsg headPosition;
     private Quaternion headRotation;
     private List<XRNodeState> nodeStates = new List<XRNodeState>();
@@ -37,8 +40,8 @@ public class RosHeadRotationPublisher : MonoBehaviour
             var headState = nodeStates.FirstOrDefault(node => node.nodeType == XRNode.Head);
             headState.TryGetRotation(out headRotation);
             Vector3 angles = headRotation.eulerAngles;
-            float panAngle = angles.y;
-            float tiltAngle = angles.x;
+            float panAngle = angles.y + panOffset;
+            float tiltAngle = angles.x + tiltOffset;
             if (panAngle > 180)
             {
                 panAngle -= 360;
