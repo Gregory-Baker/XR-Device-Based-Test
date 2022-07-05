@@ -24,11 +24,9 @@ public class ActuateGripper : MonoBehaviour
     {
         var gripperCmd = new GripperCommandActionGoal();
 
-        gripperCmd.goal.command.position = (gripperClosed) ? 0.0 : 0.75;
+        gripperCmd.goal.command.position = (gripperClosed) ? 0.0 : 0.8;
 
         gripperClosed = !gripperClosed;
-
-        Debug.Log("Here");
 
         ros.Publish(topicName, gripperCmd);
     }

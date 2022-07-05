@@ -17,11 +17,11 @@ namespace Valve.VR
     public class SteamVR_Input_ActionSet_arm_movement : Valve.VR.SteamVR_ActionSet
     {
         
-        public virtual SteamVR_Action_Vector2 targetZRotation
+        public virtual SteamVR_Action_Vector2 targetPosition
         {
             get
             {
-                return SteamVR_Actions.arm_movement_targetZRotation;
+                return SteamVR_Actions.arm_movement_targetPosition;
             }
         }
         
@@ -41,22 +41,6 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean increaseTargetDistance
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_increaseTargetDistance;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean decreaseTargetDistance
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_decreaseTargetDistance;
-            }
-        }
-        
         public virtual SteamVR_Action_Boolean changeControlMode
         {
             get
@@ -73,27 +57,19 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean ActivateMenu
+        public virtual SteamVR_Action_Boolean stopArm
         {
             get
             {
-                return SteamVR_Actions.arm_movement_ActivateMenu;
+                return SteamVR_Actions.arm_movement_stopArm;
             }
         }
         
-        public virtual SteamVR_Action_Boolean Select
+        public virtual SteamVR_Action_Vector2 targetRotationAndHeight
         {
             get
             {
-                return SteamVR_Actions.arm_movement_Select;
-            }
-        }
-        
-        public virtual SteamVR_Action_Vector2 MenuSelectionPosition
-        {
-            get
-            {
-                return SteamVR_Actions.arm_movement_MenuSelectionPosition;
+                return SteamVR_Actions.arm_movement_targetRotationAndHeight;
             }
         }
     }

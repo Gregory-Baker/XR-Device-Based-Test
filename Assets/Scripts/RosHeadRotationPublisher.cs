@@ -22,6 +22,8 @@ public class RosHeadRotationPublisher : MonoBehaviour
     private Quaternion headRotation;
     private List<XRNodeState> nodeStates = new List<XRNodeState>();
 
+    float prevPanAngle = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +36,7 @@ public class RosHeadRotationPublisher : MonoBehaviour
     void Update()
     {
         timeElapsed += Time.deltaTime;
-        if (timeElapsed > publishMessageFrequency)
+        if (ros.isActiveAndEnabled && timeElapsed > publishMessageFrequency)
         {
             InputTracking.GetNodeStates(nodeStates);
             var headState = nodeStates.FirstOrDefault(node => node.nodeType == XRNode.Head);
@@ -50,10 +52,21 @@ public class RosHeadRotationPublisher : MonoBehaviour
             {
                 tiltAngle -= 360;
             }
-            // Vector3Msg headRotMsg = new Vector3Msg(angles.x, angles.y, angles.z);
+            float panChange = Mathf.Abs(panAngle - prevPanAngle);
+            if (panChange > 270)
+            {
+                panAngle = prevPanAngle;
+            }
             PanTiltAngleMsg headRotMsg = new PanTiltAngleMsg(panAngle, tiltAngle);
             ros.Publish(topicName, headRotMsg);
+            prevPanAngle = panAngle;
             timeElapsed = 0;
         }
+    }
+
+    public void CentreCamera()
+    {
+        panOffset = 0;
+        tiltOffset = 0;
     }
 }

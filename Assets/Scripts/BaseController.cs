@@ -4,23 +4,19 @@ using UnityEngine;
 using Valve.VR;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
+using UnityEditor.PackageManager;
 
 public class BaseController : MonoBehaviour
 {
-    [Header("SteamVR Tracking")]
+    [Header("SteamVR Input Source")]
     public SteamVR_Input_Sources inputSource = SteamVR_Input_Sources.Any;
 
-    public SteamVR_Action_Boolean targetSelectAction = null;
-
-    public GameObject xrRayObject = null;
     private XRRayInteractor xrRayInteractor = null;
     private XRInteractorLineVisual xrLineVisual = null;
 
-    [Header("SteamVR Input")]
+    [Header("SteamVR Actions")]
+    public SteamVR_Action_Boolean targetSelectAction = null;
     public SteamVR_Action_Vector2 targetRotation = null;
-    public float directionTolerance = 0.01f;
-    public float turnMultiplier = 20;
-    float directionLast = 0;
 
     public SteamVR_Action_Vector2 strafeTargetAction = null;
 
@@ -28,32 +24,55 @@ public class BaseController : MonoBehaviour
     public delegate void ConfirmAction();
     public static event ConfirmAction OnConfirm;
 
-    public SteamVR_Action_Boolean turnLeftAction = null;
-    public delegate void TurnLeftAction();
-    public static event TurnLeftAction OnTurnLeft;
 
-    //public SteamVR_Action_Boolean nudgeForwardAction = null;
-    public delegate void NudgeForwardAction();
-    public static event NudgeForwardAction OnNudgeForward;
+    public SteamVR_Action_Boolean turnCamLeftAction = null;
+    public delegate void TurnCamLeft();
+    public static event TurnCamLeft OnTurnCamLeft;
 
-    //public SteamVR_Action_Boolean nudgeBackwardAction = null;
-    public delegate void NudgeBackwardAction();
-    public static event NudgeBackwardAction OnNudgeBackward;
+    public SteamVR_Action_Boolean turnCamRightAction = null;
+    public delegate void TurnCamRight();
+    public static event TurnCamRight OnTurnCamRight;
 
-    public SteamVR_Action_Boolean turnRightAction = null;
-    public delegate void TurnRightAction();
-    public static event TurnLeftAction OnTurnRight;
+    public delegate void TurnRobotToCamAction();
+    public static event TurnRobotToCamAction OnTurnRobotToCam;
+
+    public SteamVR_Action_Boolean moveForwardAction = null;
+    public delegate void MoveForward();
+    public static event MoveForward OnMoveForward;
+
+    public SteamVR_Action_Boolean moveBackwardAction = null;
+    public delegate void MoveBackward();
+    public static event MoveBackward OnMoveBackward;
+
+    public delegate void MoveRobotToTargetDelegate (int direction);
+    public static event MoveRobotToTargetDelegate OnMoveRobotToTarget;
+
+    public delegate void MoveTargetoRobotDelegate();
+    public static event MoveTargetoRobotDelegate OnMoveTargetToRobot;
+
 
     public SteamVR_Action_Boolean stopAction = null;
     public delegate void StopAction();
-    public static event TurnLeftAction OnStop;
+    public static event StopAction OnStop;
+
+    [Header("Configurable Parameters")]
+    public float targetTurnMultiplier = 120f;
+    
 
     [Header("External Objects")]
+    // public GameObject baseLinkObject = null;
+    public GameObject xrRayObject = null;
     public RosHeadRotationPublisher panTiltPublisher;
+
+    // Internal Parameters
+    float directionLast = 0;
+    public bool robotStopCommanded = false;
+    int moveDirection = 1;
 
     // Start is called before the first frame update
     void OnEnable()
     {
+
         xrRayInteractor = xrRayObject.GetComponent<XRRayInteractor>();
         xrLineVisual = xrRayObject.GetComponent<XRInteractorLineVisual>();
 
@@ -63,10 +82,20 @@ public class BaseController : MonoBehaviour
         targetRotation[inputSource].onAxis += turnTarget;
         strafeTargetAction[inputSource].onAxis += strafeTarget;
         targetConfirmAction[inputSource].onStateDown += confirmTarget;
-        turnLeftAction[inputSource].onStateDown += turnLeft;
-        turnRightAction[inputSource].onStateDown += turnRight;
-        //nudgeForwardAction[inputSource].onStateDown += nudgeForward;
-        //nudgeBackwardAction[inputSource].onStateDown += nudgeBackward;
+
+        turnCamLeftAction[inputSource].onState += turnCamLeft;
+        turnCamRightAction[inputSource].onState += turnCamRight;
+        turnCamLeftAction[inputSource].onStateUp += TurnRobotToCamera;
+        turnCamRightAction[inputSource].onStateUp += TurnRobotToCamera;
+
+        moveForwardAction[inputSource].onStateDown += MoveTargetToRobot;
+        moveForwardAction[inputSource].onState += MoveTargetForward;
+        moveForwardAction[inputSource].onStateUp += MoveRobotToTarget;
+
+        moveBackwardAction[inputSource].onStateDown += MoveTargetToRobot;
+        moveBackwardAction[inputSource].onState += MoveTargetBackward;
+        moveBackwardAction[inputSource].onStateUp += MoveRobotToTarget;
+
         stopAction[inputSource].onStateDown += stopRobot;
     }
 
@@ -79,14 +108,30 @@ public class BaseController : MonoBehaviour
         targetRotation[inputSource].onAxis -= turnTarget;
         strafeTargetAction[inputSource].onAxis -= strafeTarget;
         targetConfirmAction[inputSource].onStateDown -= confirmTarget;
-        turnLeftAction[inputSource].onStateDown -= turnLeft;
-        turnRightAction[inputSource].onStateDown -= turnRight;
-        //nudgeForwardAction[inputSource].onStateDown -= nudgeForward;
-        //nudgeBackwardAction[inputSource].onStateDown -= nudgeBackward;
+
+        turnCamLeftAction[inputSource].onState -= turnCamLeft;
+        turnCamRightAction[inputSource].onState -= turnCamRight;
+        turnCamLeftAction[inputSource].onStateUp -= TurnRobotToCamera;
+        turnCamRightAction[inputSource].onStateUp -= TurnRobotToCamera;
+
+        moveForwardAction[inputSource].onStateDown -= MoveTargetToRobot;
+        moveForwardAction[inputSource].onState -= MoveTargetForward;
+        moveForwardAction[inputSource].onStateUp -= MoveRobotToTarget;
+
+        moveBackwardAction[inputSource].onStateDown -= MoveTargetToRobot;
+        moveBackwardAction[inputSource].onState -= MoveTargetBackward;
+        moveBackwardAction[inputSource].onStateUp -= MoveRobotToTarget;
+
         stopAction[inputSource].onStateDown -= stopRobot;
     }
 
-
+    private void MoveTargetToRobot(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnMoveTargetToRobot != null)
+        {
+            OnMoveTargetToRobot();
+        }
+    }
 
     private void disableTargetSelection(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
@@ -110,9 +155,9 @@ public class BaseController : MonoBehaviour
         {
             float direction = -Mathf.Atan2(targetRotation[inputSource].axis.y, targetRotation[inputSource].axis.x);
             float directionDelta = direction - directionLast;
-            if (Mathf.Abs(directionDelta) < Mathf.PI && Mathf.Abs(directionDelta) > directionTolerance && targetSelectAction[inputSource].state != true)
+            if (Mathf.Abs(directionDelta) < Mathf.PI && targetSelectAction[inputSource].state != true)
             {
-                xrLineVisual.reticle.transform.Rotate(new Vector3(0, directionDelta * turnMultiplier, 0));
+                xrLineVisual.reticle.transform.Rotate(new Vector3(0, Mathf.Rad2Deg * directionDelta * targetTurnMultiplier * Time.deltaTime, 0));
             }
             directionLast = direction;
         }
@@ -127,51 +172,53 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    private void turnLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    private void turnCamLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (OnTurnLeft != null)
+        if (OnTurnCamLeft != null)
         {
-            OnTurnLeft();
-        }
-    }
-    private void turnRight(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
-    {
-        if (OnTurnRight != null)
-        {
-            OnTurnRight();
+            OnTurnCamLeft();
         }
     }
 
-    private void nudgeForward(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    private void turnCamRight(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (OnNudgeForward != null)
+        if (OnTurnCamRight != null)
         {
-            OnNudgeForward();
+            OnTurnCamRight();
         }
     }
 
-    private void nudgeBackward(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    private void MoveTargetForward(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (OnNudgeBackward != null)
+        moveDirection = 1;
+        if (OnMoveForward != null)
         {
-            OnNudgeBackward();
+            OnMoveForward();
+        }
+    }
+
+    private void MoveTargetBackward(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        moveDirection = -1;
+        if (OnMoveBackward != null)
+        {
+            OnMoveBackward();
+        }
+    }
+
+    private void MoveRobotToTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnMoveRobotToTarget != null)
+        {
+            OnMoveRobotToTarget(moveDirection);
         }
     }
 
     private void strafeTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
         turnRobot(axis);
-        turnCamera(axis);
+        // turnCamera(axis);
         moveRobotForwardBack(axis);
-    }
-
-    private void turnCamera(Vector2 axis)
-    {
-        if (Mathf.Abs(axis.x) > 0.5)
-        {
-            float turnSpeed = 30.0f;
-            panTiltPublisher.panOffset += axis.x * turnSpeed * Time.deltaTime;
-        }
     }
 
     private void moveRobotForwardBack(Vector2 axis)
@@ -184,6 +231,11 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    private void TurnRobotToCamera(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (OnTurnRobotToCam != null)
+            OnTurnRobotToCam();
+    }
 
 
     private void turnRobot(Vector2 axis)
@@ -197,6 +249,7 @@ public class BaseController : MonoBehaviour
 
     private void stopRobot(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
+        robotStopCommanded = true;
         if (OnStop != null)
         {
             OnStop();

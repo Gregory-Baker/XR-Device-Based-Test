@@ -7,35 +7,37 @@ using Valve.VR;
 
 public class ArmControllerSteer : MonoBehaviour
 {
-    public enum ControlMode
-    {
-        UpDownRotate,
-        ForwardBackLeftRight,
-        Place
-    }
+    [Header("Events")]
+    public ChangeArmTargetControl changeArmTargetControl;
 
-    [HideInInspector]
-    public ControlMode controlMode = ControlMode.UpDownRotate;
-
+    [Header("External Objects")]
     public GameObject targetObject;
-    public GameObject upRotateArrows;
-    public GameObject fblrArrows;
-    public GameObject placeVerticalAxis;
+    public GameObject arrows;
 
     [Header("SteamVR Inputs")]
     public SteamVR_Input_Sources inputSource = SteamVR_Input_Sources.Any;
     public SteamVR_Action_Boolean changeControlMode = null;
     public SteamVR_Action_Boolean confirmTarget = null;
     public SteamVR_Action_Boolean actuateGripper = null;
-    public SteamVR_Action_Vector2 moveTarget = null;
+    public SteamVR_Action_Vector2 moveTargetInPlane = null;
+    public SteamVR_Action_Vector2 moveTargetUpDownRotate = null;
+    public SteamVR_Action_Boolean stopArm = null;
 
+    [Header("Parameters")]
+    public bool targetOrientationChangeable = false;
     public float axisThreshold = 0.5f;
-    public float moveDistance = 0.01f;
+    public float moveSpeed = 0.1f;
     public float directionTolerance = 0.01f;
-    public float turnAngle = 0.05f;
-    float directionLast = 0;
-    float yAxisLast = 0;
+    public float turnSpeed = 50f;
 
+    [Header("Target Limits")]
+    public float targetForwardMax = 0.8f;
+    public float targetForwardMin = 0.0f;
+    public float targetLRMax = 0.4f;
+    public float targetHeightMax = 0.8f;
+
+
+    public UnityEvent onStopEvents;
     public UnityEvent onConfirmTargetEvents;
     public UnityEvent onActuateGripperEvents;
 
@@ -45,16 +47,31 @@ public class ArmControllerSteer : MonoBehaviour
         changeControlMode[inputSource].onStateDown += ChangeControlMode;
         confirmTarget[inputSource].onStateDown += ConfirmTarget;
         actuateGripper[inputSource].onStateDown += ActuateGripper;
-        moveTarget[inputSource].onAxis += MoveTarget;
-        ShowArrows();
+        moveTargetInPlane[inputSource].onAxis += MoveTargetInPlane;
+        moveTargetUpDownRotate[inputSource].onAxis += MoveTargetUpDownRotate;
+        stopArm[inputSource].onStateDown += StopArm;
+
+        SetControlModeToPosition();
     }
 
-    private void OnDisble()
+    private void OnDisable()
     {
         changeControlMode[inputSource].onStateDown -= ChangeControlMode;
         confirmTarget[inputSource].onStateDown -= ConfirmTarget;
         actuateGripper[inputSource].onStateDown -= ActuateGripper;
-        moveTarget[inputSource].onAxis -= MoveTarget;
+        moveTargetInPlane[inputSource].onAxis -= MoveTargetInPlane;
+        moveTargetUpDownRotate[inputSource].onAxis -= MoveTargetUpDownRotate;
+        stopArm[inputSource].onStateDown -= StopArm;
+    }
+
+    public void SetControlModeToPosition() {
+        changeArmTargetControl.controlMode = ChangeArmTargetControl.ControlMode.TargetPositionControl;
+        changeArmTargetControl.TriggerEvent();
+    }
+
+    private void StopArm(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        onStopEvents.Invoke();
     }
 
     private void ActuateGripper(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -69,93 +86,88 @@ public class ArmControllerSteer : MonoBehaviour
 
     private void ChangeControlMode(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        controlMode = (controlMode != ControlMode.Place) ? controlMode + 1 : 0;
-
-        ShowArrows();
-
+        changeArmTargetControl.ChangeControlMode();
+        changeArmTargetControl.TriggerEvent();
     }
 
     private void MoveTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
         if (axis.magnitude > axisThreshold)
         {
-            switch (controlMode)
+            switch (changeArmTargetControl.controlMode)
             {
-                case ControlMode.UpDownRotate:
+                case ChangeArmTargetControl.ControlMode.SpecialFunctions:
                     turnTarget(axis);
                     moveTargetUpDown(axis);
                     break;
-                case ControlMode.ForwardBackLeftRight:
+                case ChangeArmTargetControl.ControlMode.TargetPositionControl:
                     moveTargetFBLR(axis);
-                    break;
-                case ControlMode.Place:
                     break;
             }
         }
     }
 
+    private void MoveTargetInPlane(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
+    {
+        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
+            moveTargetFBLR(axis);
+    }
+
     private void moveTargetFBLR(Vector2 axis)
     {
-        Vector3 translation = new Vector3(axis.x * moveDistance, 0, axis.y * moveDistance);
+        Vector3 translation = new Vector3();
+        if (axis.y > 0)
+        {
+            if (targetObject.transform.localPosition.z < targetForwardMax)
+                translation.z = axis.y * moveSpeed * Time.deltaTime;
+        }
+        else if (axis.y < 0)
+        {
+            if (targetObject.transform.localPosition.z > targetForwardMin)
+                translation.z = axis.y * moveSpeed * Time.deltaTime;
+        }
+
+        if (axis.x > 0)
+        {
+            if (targetObject.transform.localPosition.x < targetLRMax)
+                translation.x = axis.x * moveSpeed * Time.deltaTime;
+        }
+        if (axis.x < 0)
+            if (targetObject.transform.localPosition.x > -targetLRMax)
+                translation.x = axis.x * moveSpeed * Time.deltaTime;
+
         targetObject.transform.Translate(translation, targetObject.transform.parent);
+    }
+
+    private void MoveTargetUpDownRotate(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
+    {
+        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
+        {
+            if (targetOrientationChangeable)
+            {
+                turnTarget(axis);
+            }
+            
+            moveTargetUpDown(axis);
+        }
     }
 
     private void moveTargetUpDown(Vector2 axis)
     {
         if (Mathf.Abs(axis.y) > axisThreshold) {
-            Vector3 translation = new Vector3(0, axis.y * moveDistance, 0);
+            Vector3 translation = new Vector3(0, axis.y * moveSpeed * Time.deltaTime, 0);
             targetObject.transform.Translate(translation, Space.World);
         }
     }
 
-    private void moveTargetUpDown(Vector2 axis, Vector2 delta)
-    {
-        Vector3 translation = new Vector3(0, delta.y * moveDistance, 0);
-        targetObject.transform.Translate(translation, Space.World);
-    }
-
-    //private bool turnTarget(Vector2 axis)
-    //{
-    //    bool turned = false;
-    //    float direction = Mathf.Atan2(axis.y, axis.x);
-    //    float directionDelta = direction - directionLast;
-    //    if (Mathf.Abs(directionDelta) < Mathf.PI && Mathf.Abs(directionDelta) > directionTolerance)
-    //    {
-    //        targetObject.transform.Rotate(new Vector3(0, Mathf.Sign(directionDelta) * turnAngle / Time.deltaTime, 0));
-    //        fblrArrows.transform.Rotate(new Vector3(0, -Mathf.Sign(directionDelta) * turnAngle / Time.deltaTime, 0));
-    //        turned = true;
-    //    }
-    //    directionLast = direction;
-    //    return turned;
-    //}
 
     private void turnTarget(Vector2 axis)
     {
         if (Mathf.Abs(axis.x) > axisThreshold)
         {
-            targetObject.transform.Rotate(new Vector3(0, -axis.x * turnAngle / Time.deltaTime, 0));
-        }
-    }
-
-    public void ShowArrows()
-    {
-        switch (controlMode)
-        {
-            case ControlMode.UpDownRotate:
-                upRotateArrows.SetActive(true);
-                fblrArrows.SetActive(false);
-                placeVerticalAxis.SetActive(false);
-                break;
-            case ControlMode.ForwardBackLeftRight:
-                upRotateArrows.SetActive(false);
-                fblrArrows.SetActive(true);
-                placeVerticalAxis.SetActive(false);
-                break;
-            case ControlMode.Place:
-                upRotateArrows.SetActive(false);
-                fblrArrows.SetActive(false);
-                placeVerticalAxis.SetActive(true);
-                break;
+            Vector3 rotation = new Vector3(0, -axis.x * turnSpeed * Time.deltaTime, 0);
+            targetObject.transform.Rotate(rotation);
+            arrows.transform.Rotate(-rotation);
         }
     }
 }

@@ -25,19 +25,19 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean GrabPinch
+        public virtual SteamVR_Action_Boolean ConfirmTarget
         {
             get
             {
-                return SteamVR_Actions.base_movement_GrabPinch;
+                return SteamVR_Actions.base_movement_ConfirmTarget;
             }
         }
         
-        public virtual SteamVR_Action_Boolean GrabGrip
+        public virtual SteamVR_Action_Boolean StopRobot
         {
             get
             {
-                return SteamVR_Actions.base_movement_GrabGrip;
+                return SteamVR_Actions.base_movement_StopRobot;
             }
         }
         
@@ -65,22 +65,6 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean SnapTurnLeft
-        {
-            get
-            {
-                return SteamVR_Actions.base_movement_SnapTurnLeft;
-            }
-        }
-        
-        public virtual SteamVR_Action_Boolean SnapTurnRight
-        {
-            get
-            {
-                return SteamVR_Actions.base_movement_SnapTurnRight;
-            }
-        }
-        
         public virtual SteamVR_Action_Vector2 ThumbXY
         {
             get
@@ -94,6 +78,38 @@ namespace Valve.VR
             get
             {
                 return SteamVR_Actions.base_movement_StrafeTarget;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean TurnCamLeft
+        {
+            get
+            {
+                return SteamVR_Actions.base_movement_TurnCamLeft;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean TurnCamRight
+        {
+            get
+            {
+                return SteamVR_Actions.base_movement_TurnCamRight;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean moveForward
+        {
+            get
+            {
+                return SteamVR_Actions.base_movement_moveForward;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean moveBackward
+        {
+            get
+            {
+                return SteamVR_Actions.base_movement_moveBackward;
             }
         }
         

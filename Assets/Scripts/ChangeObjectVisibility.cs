@@ -7,18 +7,18 @@ public class ChangeObjectVisibility : MonoBehaviour
 
     public bool hidden = false;
 
-    MeshRenderer[] objectRenderers;
+    Renderer[] objectRenderers;
 
     void Awake()
     {
-        objectRenderers = GetComponentsInChildren<MeshRenderer>();
+        objectRenderers = GetComponentsInChildren<Renderer>();
     }
 
     public void HideObjectAndChildren()
     {
         if (!hidden)
         {
-            foreach (MeshRenderer renderer in objectRenderers)
+            foreach (Renderer renderer in objectRenderers)
             {
                 renderer.enabled = false;
             }
@@ -31,7 +31,7 @@ public class ChangeObjectVisibility : MonoBehaviour
     {
         if (hidden)
         {
-            foreach (MeshRenderer renderer in objectRenderers)
+            foreach (Renderer renderer in objectRenderers)
             {
                 renderer.enabled = true;
             }

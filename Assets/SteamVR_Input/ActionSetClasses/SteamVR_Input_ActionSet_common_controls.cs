@@ -56,5 +56,29 @@ namespace Valve.VR
                 return SteamVR_Actions.common_controls_Interface;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean ActivateMenu
+        {
+            get
+            {
+                return SteamVR_Actions.common_controls_ActivateMenu;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean SelectMenu
+        {
+            get
+            {
+                return SteamVR_Actions.common_controls_SelectMenu;
+            }
+        }
+        
+        public virtual SteamVR_Action_Vector2 MenuCursorPosition
+        {
+            get
+            {
+                return SteamVR_Actions.common_controls_MenuCursorPosition;
+            }
+        }
     }
 }

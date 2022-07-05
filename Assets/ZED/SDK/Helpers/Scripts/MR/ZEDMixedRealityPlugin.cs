@@ -841,9 +841,9 @@ public class ZEDMixedRealityPlugin : MonoBehaviour
     {
         //Default Calibration: DO NOT CHANGE.
         hmdtozedCalibration.rotation = Quaternion.identity;
-        hmdtozedCalibration.translation.x = -0.0315f;
+        hmdtozedCalibration.translation.x = 0.0f;
         hmdtozedCalibration.translation.y = 0.0f;
-        hmdtozedCalibration.translation.z = 0.115f;
+        hmdtozedCalibration.translation.z = 0.0f;
 
         //Write calibration file using default calibration.
         using (System.IO.StreamWriter file = new System.IO.StreamWriter(path))
@@ -894,9 +894,9 @@ public class ZEDMixedRealityPlugin : MonoBehaviour
 
         //Default to these values (which are the same ones put in the calibration file by default).
         hmdtozedCalibration.rotation = Quaternion.identity;
-        hmdtozedCalibration.translation.x = -0.0315f;
+        hmdtozedCalibration.translation.x = 0.0f;
         hmdtozedCalibration.translation.y = 0.0f;
-        hmdtozedCalibration.translation.z = 0.115f;
+        hmdtozedCalibration.translation.z = 0.0f;
 
         foreach (string line in lines)
         {

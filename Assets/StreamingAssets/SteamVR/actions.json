@@ -5,11 +5,11 @@
       "type": "boolean"
     },
     {
-      "name": "/actions/base_movement/in/GrabPinch",
+      "name": "/actions/base_movement/in/ConfirmTarget",
       "type": "boolean"
     },
     {
-      "name": "/actions/base_movement/in/GrabGrip",
+      "name": "/actions/base_movement/in/StopRobot",
       "type": "boolean"
     },
     {
@@ -27,15 +27,6 @@
       "requirement": "optional"
     },
     {
-      "name": "/actions/base_movement/in/SnapTurnLeft",
-      "type": "boolean",
-      "requirement": "suggested"
-    },
-    {
-      "name": "/actions/base_movement/in/SnapTurnRight",
-      "type": "boolean"
-    },
-    {
       "name": "/actions/base_movement/in/ThumbXY",
       "type": "vector2"
     },
@@ -44,11 +35,27 @@
       "type": "vector2"
     },
     {
+      "name": "/actions/base_movement/in/TurnCamLeft",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/base_movement/in/TurnCamRight",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/base_movement/in/moveForward",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/base_movement/in/moveBackward",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/base_movement/out/Haptic",
       "type": "vibration"
     },
     {
-      "name": "/actions/arm_movement/in/targetZRotation",
+      "name": "/actions/arm_movement/in/targetPosition",
       "type": "vector2"
     },
     {
@@ -60,14 +67,6 @@
       "type": "boolean"
     },
     {
-      "name": "/actions/arm_movement/in/increaseTargetDistance",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/arm_movement/in/decreaseTargetDistance",
-      "type": "boolean"
-    },
-    {
       "name": "/actions/arm_movement/in/changeControlMode",
       "type": "boolean"
     },
@@ -76,15 +75,11 @@
       "type": "boolean"
     },
     {
-      "name": "/actions/arm_movement/in/ActivateMenu",
+      "name": "/actions/arm_movement/in/stopArm",
       "type": "boolean"
     },
     {
-      "name": "/actions/arm_movement/in/Select",
-      "type": "boolean"
-    },
-    {
-      "name": "/actions/arm_movement/in/MenuSelectionPosition",
+      "name": "/actions/arm_movement/in/targetRotationAndHeight",
       "type": "vector2"
     },
     {
@@ -106,6 +101,18 @@
     {
       "name": "/actions/common_controls/in/Interface",
       "type": "boolean"
+    },
+    {
+      "name": "/actions/common_controls/in/ActivateMenu",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/common_controls/in/SelectMenu",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/common_controls/in/MenuCursorPosition",
+      "type": "vector2"
     }
   ],
   "action_sets": [

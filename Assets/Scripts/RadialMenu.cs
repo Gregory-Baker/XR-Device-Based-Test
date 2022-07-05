@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RadialMenu : MonoBehaviour
 {
+    public bool buttonsActive = false;
+
     [Header("Scene")]
     public Transform selectionTransform = null;
     public Transform cursorTransform = null;
@@ -22,12 +24,12 @@ public class RadialMenu : MonoBehaviour
     private readonly float degreeIncrement = 90.0f;
 
 
-    private void Awake()
+    private void OnEnable()
     {
         CreateAndSetupSections();
     }
 
-    private void CreateAndSetupSections()
+    public void CreateAndSetupSections()
     {
         radialSections = new List<RadialSection>()
         {
@@ -43,10 +45,6 @@ public class RadialMenu : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        Show(false);
-    }
 
     public void Show(bool value)
     {
@@ -113,6 +111,7 @@ public class RadialMenu : MonoBehaviour
 
     public void ActivateHighlightedSection()
     {
-        highlightSection.onPress.Invoke();
+        if (buttonsActive)
+            highlightSection.onPress.Invoke();
     }
 }
