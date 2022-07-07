@@ -65,7 +65,7 @@ public class MoveToTarget : MonoBehaviour
         ros.RegisterPublisher<PoseStampedMsg>(goalTopicName);
         ros.RegisterPublisher<GoalIDMsg>(cancelGoalTopicName);
         ros.RegisterPublisher<TwistMsg>(cmdVelTopic);
-        ros.Subscribe<GoalStatusArrayMsg>(moveBaseActionStatusTopic, MoveBaseResultCallback);
+        ros.Subscribe<GoalStatusArrayMsg>(moveBaseActionStatusTopic, MoveBaseStatusCallback);
 
         BaseController.OnConfirm += ConfirmTargetPosition;
         BaseController.OnStop += StopRobot;
@@ -104,7 +104,7 @@ public class MoveToTarget : MonoBehaviour
         SetStartPosition();
     }
 
-    private void MoveBaseResultCallback(GoalStatusArrayMsg msg)
+    private void MoveBaseStatusCallback(GoalStatusArrayMsg msg)
     {
         if (msg.status_list.Length > 0)
         {
@@ -154,6 +154,7 @@ public class MoveToTarget : MonoBehaviour
         // Degrees per second
         TwistMsg twistMsg = new TwistMsg();
         twistMsg.angular.z = Mathf.Deg2Rad * robotTurnSpeed * -Mathf.Sign(panTiltPublisher.panOffset);
+        previousRobotHeading = robotBaseLink.transform.eulerAngles.y;
         while (Mathf.Abs(panTiltPublisher.panOffset) > 2)
         {
             // Debug.Log(panTiltPublisher.panOffset); 
@@ -237,7 +238,7 @@ public class MoveToTarget : MonoBehaviour
         transform.SetPositionAndRotation(targetObject.transform.position, targetObject.transform.rotation);
     }
 
-    private void MoveTargetToRobot()
+    public void MoveTargetToRobot()
     {
         targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
         transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);

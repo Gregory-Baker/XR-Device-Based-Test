@@ -21,6 +21,7 @@ public class BaseLinkObjectTracker : MonoBehaviour
         }
         transform.SetParent(baseLinkObject.transform);
         transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
     }
 
     // Update is called once per frame

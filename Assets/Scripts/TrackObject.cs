@@ -16,7 +16,7 @@ public class TrackObject : MonoBehaviour
     Vector3 positionOffset = Vector3.zero;
 
     [SerializeField]
-    float rotationOffset = 0f;
+    protected float rotationOffset = 0f;
 
     [SerializeField]
     bool moveEveryFrame = true;

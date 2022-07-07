@@ -109,7 +109,7 @@ public class ArmControllerSteer : MonoBehaviour
 
     private void MoveTargetInPlane(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
-        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
+        // if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
             moveTargetFBLR(axis);
     }
 

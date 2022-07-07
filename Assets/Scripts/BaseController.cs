@@ -83,10 +83,13 @@ public class BaseController : MonoBehaviour
         strafeTargetAction[inputSource].onAxis += strafeTarget;
         targetConfirmAction[inputSource].onStateDown += confirmTarget;
 
+        turnCamLeftAction[inputSource].onStateDown += MoveTargetToRobot;
         turnCamLeftAction[inputSource].onState += turnCamLeft;
-        turnCamRightAction[inputSource].onState += turnCamRight;
         turnCamLeftAction[inputSource].onStateUp += TurnRobotToCamera;
+
+        turnCamRightAction[inputSource].onStateDown += MoveTargetToRobot;
         turnCamRightAction[inputSource].onStateUp += TurnRobotToCamera;
+        turnCamRightAction[inputSource].onState += turnCamRight;
 
         moveForwardAction[inputSource].onStateDown += MoveTargetToRobot;
         moveForwardAction[inputSource].onState += MoveTargetForward;
@@ -109,10 +112,13 @@ public class BaseController : MonoBehaviour
         strafeTargetAction[inputSource].onAxis -= strafeTarget;
         targetConfirmAction[inputSource].onStateDown -= confirmTarget;
 
+        turnCamLeftAction[inputSource].onStateDown -= MoveTargetToRobot;
         turnCamLeftAction[inputSource].onState -= turnCamLeft;
-        turnCamRightAction[inputSource].onState -= turnCamRight;
         turnCamLeftAction[inputSource].onStateUp -= TurnRobotToCamera;
+
+        turnCamRightAction[inputSource].onStateDown -= MoveTargetToRobot;
         turnCamRightAction[inputSource].onStateUp -= TurnRobotToCamera;
+        turnCamRightAction[inputSource].onState -= turnCamRight;
 
         moveForwardAction[inputSource].onStateDown -= MoveTargetToRobot;
         moveForwardAction[inputSource].onState -= MoveTargetForward;

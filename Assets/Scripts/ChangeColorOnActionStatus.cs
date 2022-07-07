@@ -6,7 +6,7 @@ using RosMessageTypes.Actionlib;
 using System;
 using System.Linq;
 
-public class ColorOnError : MonoBehaviour
+public class ChangeColorOnActionStatus : MonoBehaviour
 {
     ROSConnection ros;
 

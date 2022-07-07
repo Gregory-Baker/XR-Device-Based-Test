@@ -18,14 +18,25 @@ public class ArmSpecialFunctions : MonoBehaviour
         {
             case ChangeArmTargetControl.ControlMode.SpecialFunctions:
                 ApplySpecialIcons();
-                radialMenu.buttonsActive = true;
+                ActivateFunctions();
                 break;
             case ChangeArmTargetControl.ControlMode.TargetPositionControl:
                 ApplyTargetPositionIcons();
-                radialMenu.buttonsActive = false;
+                DeactivateFunctions();
                 break;
         }
     }
+
+    public void ActivateFunctions()
+    {
+        radialMenu.buttonsActive = true;
+    }
+
+    public void DeactivateFunctions()
+    {
+        radialMenu.buttonsActive = false;
+    }
+
 
     public void ApplySpecialIcons()
     {

@@ -9,12 +9,24 @@ using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 using RosMessageTypes.KinovaCustom;
 using RosMessageTypes.Moveit;
+using RosMessageTypes.Control;
 
 public class ArmTarget : MonoBehaviour
 {
 
     ROSConnection ros;
 
+    public enum ArmState
+    {
+        Default,
+        Pick,
+        HomePosition
+    }
+
+    public ArmState armState = ArmState.HomePosition;
+
+
+    [Header("ROS Topics")]
     [SerializeField]
     string poseTopic = "/kinova_moveit_pose_goal";
 
@@ -28,19 +40,25 @@ public class ArmTarget : MonoBehaviour
     string stopTopic = "/kinova_arm/in/stop";
 
     [SerializeField]
+    string pickTopic = "/kinova_moveit_pick_goal";
+
+    [SerializeField]
     string placeTopic = "/kinova_place_object_server/goal";
 
     [SerializeField]
-    string moveGroupResultTopic = "/move_group/result";
+    string executeTrajectoryActionResult = "/move_group/result";
 
-    public enum ArmState
-    {
-        Default,
-        InGraspPosition,
-        HomePosition
-    }
+    [SerializeField]
+    string gripGoalTopic = "/kinova_arm/kinova_arm_robotiq_2f_85_gripper_controller/gripper_cmd/goal";
 
-    public ArmState armState = ArmState.HomePosition;
+    [SerializeField]
+    string gripResultTopic = "/kinova_arm/kinova_arm_robotiq_2f_85_gripper_controller/gripper_cmd/result";
+
+    public bool gripperClosed = false;
+
+    [Header("Variables")]
+    [SerializeField]
+    float pickHeight = 0.125f;
 
     
     [SerializeField]
@@ -48,6 +66,7 @@ public class ArmTarget : MonoBehaviour
 
     public GameObject targetLinkObject = null;
     GameObject baseLinkObject = null;
+    GameObject targetFrame = null;
     public Vector3<FLU> staticPositionOffset = Vector3<FLU>.zero;
 
     // Start is called before the first frame update
@@ -59,11 +78,24 @@ public class ArmTarget : MonoBehaviour
         ros.RegisterPublisher<JointStateMsg>(jointTopic);
         ros.RegisterPublisher<EmptyMsg>(stopTopic);
         ros.RegisterPublisher<PlaceObjectActionGoal>(placeTopic);
+        ros.RegisterPublisher<Float32Msg>(pickTopic);
+        ros.RegisterPublisher<GripperCommandActionGoal>(gripGoalTopic);
 
-        ros.Subscribe<MoveGroupActionResult>(moveGroupResultTopic, MoveGroupResultCallback);
+        ros.Subscribe<ExecuteTrajectoryActionResult>(executeTrajectoryActionResult, executeTrajectoryResultCallback);
+        ros.Subscribe<GripperCommandActionResult>(gripResultTopic, gripResultCallback);
 
         StartCoroutine(SetBaseLinkObject());
+        StartCoroutine(SetTargetFrameObject());
 
+    }
+
+    private IEnumerator SetTargetFrameObject()
+    {
+        while (targetFrame == null)
+        {
+            targetFrame = GameObject.Find("kinova_arm_tool_frame");
+            yield return null;
+        }
     }
 
     private IEnumerator SetBaseLinkObject()
@@ -79,6 +111,7 @@ public class ArmTarget : MonoBehaviour
     public void StopArm()
     {
         ros.Publish(stopTopic, new EmptyMsg());
+        StartCoroutine(MoveTargetToRobotCoroutine());
     }
 
 
@@ -96,8 +129,33 @@ public class ArmTarget : MonoBehaviour
 
     public void PublishCartesianGoal()
     {
+        armState = ArmState.Default;
         PoseMsg pose = GetTargetPoseMsg();
         ros.Publish(cartesianTopic, pose);
+    }
+
+    public void CloseGripper()
+    {
+        var gripperCmd = new GripperCommandActionGoal();
+        gripperCmd.goal.command.position = 0.8;
+        gripperClosed = true;
+        ros.Publish(gripGoalTopic, gripperCmd);
+    }
+
+    public void OpenGripper()
+    {
+        var gripperCmd = new GripperCommandActionGoal();
+        gripperCmd.goal.command.position = 0.0;
+        gripperClosed = false;
+        ros.Publish(gripGoalTopic, gripperCmd);
+    }
+
+    public void ActuateGripper()
+    {
+        var gripperCmd = new GripperCommandActionGoal();
+        gripperCmd.goal.command.position = (gripperClosed) ? 0.0 : 0.8;
+        gripperClosed = !gripperClosed;
+        ros.Publish(gripGoalTopic, gripperCmd);
     }
 
     private PoseMsg GetTargetPoseMsg()
@@ -110,6 +168,25 @@ public class ArmTarget : MonoBehaviour
 
         return new PoseMsg(targetPositionROS, targetRotationROS);
     }
+
+    private Vector3 GetEndEffectorPosition()
+    {
+        Vector3 eefPosition = baseLinkObject.transform.InverseTransformPoint(targetFrame.transform.position);
+        return eefPosition;
+    }
+
+    private void MoveTargetToRobot()
+    {
+        Vector3 eefPosition = GetEndEffectorPosition();
+        transform.localPosition = eefPosition - staticPositionOffset.toUnity;
+    }
+    private IEnumerator MoveTargetToRobotCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Vector3 eefPosition = GetEndEffectorPosition();
+        transform.localPosition = eefPosition - staticPositionOffset.toUnity;
+    }
+
 
     public PoseStampedMsg GetTargetPoseStampedMsg()
     {
@@ -133,6 +210,7 @@ public class ArmTarget : MonoBehaviour
         jointPositions[5] = 1.898;
         jointPositions[6] = -0.798;
         PublishJointGoal(jointPositions);
+        armState = ArmState.HomePosition;
     }
 
     public void PublishJointGoal(double[] jointPositions)
@@ -141,6 +219,25 @@ public class ArmTarget : MonoBehaviour
         jointTarget.name = jointNames;
         jointTarget.position = jointPositions;
         ros.Publish(jointTopic, jointTarget);
+    }
+
+    public void GoToPickPoint()
+    {
+        if (armState == ArmState.Default)
+        {
+            armState = ArmState.Pick;
+            OpenGripper();
+            var pick_msg = new Float32Msg(-pickHeight);
+            ros.Publish(pickTopic, pick_msg);
+        }
+    }
+
+    // TODO: Make robust to changes in target position
+    public void GoToPostGraspPoint()
+    {
+        var pick_msg = new Float32Msg(pickHeight);
+        ros.Publish(pickTopic, pick_msg);
+        armState = ArmState.Default;
     }
 
     public void PlaceObject()
@@ -156,13 +253,23 @@ public class ArmTarget : MonoBehaviour
         Debug.Log("Orientation: " + targetRotationROS);
     }
 
-    private void MoveGroupResultCallback(MoveGroupActionResult msg)
+    private void executeTrajectoryResultCallback(ExecuteTrajectoryActionResult msg)
     {
-        if (msg.status.status == 3)
+        if (armState == ArmState.Pick && msg.status.status == 3)
         {
-            armState = ArmState.InGraspPosition;
+
+            CloseGripper();
+            
         }
+
     }
 
+    private void gripResultCallback(GripperCommandActionResult obj)
+    {
+        if (armState == ArmState.Pick && gripperClosed)
+        {
+            GoToPostGraspPoint();
+        }
 
+    }
 }

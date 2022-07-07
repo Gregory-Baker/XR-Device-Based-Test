@@ -11,7 +11,7 @@ public class ColorOnErrorSprite : MonoBehaviour
     ROSConnection ros;
 
     [SerializeField]
-    string topicName = null;
+    string topicName = "/move_base/status";
 
     public Color32 goalSuccessColour = Color.green;
     public Color32 goalFailureColour = Color.red;
