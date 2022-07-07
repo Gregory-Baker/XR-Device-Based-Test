@@ -10,10 +10,10 @@ using RosMessageTypes.Std;
 using RosMessageTypes.KinovaCustom;
 using RosMessageTypes.Moveit;
 using RosMessageTypes.Control;
+using UnityEngine.UIElements;
 
 public class ArmTarget : MonoBehaviour
 {
-
     ROSConnection ros;
 
     public enum ArmState
@@ -57,6 +57,9 @@ public class ArmTarget : MonoBehaviour
     public bool gripperClosed = false;
 
     [Header("Variables")]
+    public float delay = 0;
+
+
     [SerializeField]
     float pickHeight = 0.125f;
 
@@ -105,7 +108,9 @@ public class ArmTarget : MonoBehaviour
             baseLinkObject = GameObject.Find("base_link");
             yield return null;
         }
-        ArmToHomePosition();
+        
+        if (armState == ArmState.HomePosition)
+            ArmToHomePosition();
     }
 
     public void StopArm()
@@ -232,6 +237,12 @@ public class ArmTarget : MonoBehaviour
         }
     }
 
+    public void PickObject()
+    {
+        var pick_msg = new Float32Msg(pickHeight);
+        ros.Publish(pickTopic, pick_msg);
+    }
+
     // TODO: Make robust to changes in target position
     public void GoToPostGraspPoint()
     {
@@ -271,5 +282,11 @@ public class ArmTarget : MonoBehaviour
             GoToPostGraspPoint();
         }
 
+    }
+
+    public IEnumerator PublishWithDelay(string topic, Unity.Robotics.ROSTCPConnector.MessageGeneration.Message message)
+    {
+        yield return new WaitForSeconds(delay);
+        ros.Publish(topic, message);
     }
 }

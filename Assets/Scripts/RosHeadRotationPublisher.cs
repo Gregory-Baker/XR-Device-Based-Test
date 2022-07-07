@@ -69,4 +69,13 @@ public class RosHeadRotationPublisher : MonoBehaviour
         panOffset = 0;
         tiltOffset = 0;
     }
+
+    public IEnumerator CentreCameraCoroutine(float speed)
+    {
+        while (Mathf.Abs(panOffset) > 1)
+        {
+            panOffset -= Mathf.Sign(panOffset) * speed * Time.deltaTime;
+            yield return null;
+        }
+    }
 }

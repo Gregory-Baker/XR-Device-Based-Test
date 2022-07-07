@@ -2535,13 +2535,20 @@ MonoBehaviour:
   targetObject: {fileID: 444792418}
   cmdVelTopic: cmd_vel
   goalTopicName: move_base_simple/goal
-  cancelGoalTopicName: move_base/cancel
+  cancelGoalTopicNames:
+  - /move_base/cancel
+  - /turn_robot_server/cancel
+  - /move_distance_server/cancel
   moveBaseActionStatusTopic: /move_base/status
+  turnRobotActionTopic: /turn_robot_server/goal
+  turnRobotActionResult: /turn_robot_server/result
+  moveDistanceActionTopic: /move_distance_server/goal
   publishTarget: 1
   cameraTurnSpeed: 20
   robotTurnSpeed: 20
   moveTargetSpeed: 0.2
   panTiltPublisher: {fileID: 143899852}
+  fixCameraOrientation: 0
   robotBaseLink: {fileID: 0}
   moveBaseActionStatus: 2
 --- !u!114 &440489996
