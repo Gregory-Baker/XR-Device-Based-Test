@@ -14,8 +14,7 @@ using RosMessageTypes.MoveBase;
 using RosMessageTypes.KinovaCustom;
 
 public class MoveToTarget : MonoBehaviour
-{
-    
+{    
     [SerializeField]
     GameObject targetObject = null;
 
@@ -30,6 +29,9 @@ public class MoveToTarget : MonoBehaviour
 
     [SerializeField]
     string moveBaseActionStatusTopic = null;
+
+    [SerializeField]
+    string moveBaseActionResultTopic = null;
 
     [SerializeField]
     string turnRobotActionTopic = null;
@@ -56,7 +58,11 @@ public class MoveToTarget : MonoBehaviour
     RosHeadRotationPublisher panTiltPublisher;
 
     public bool fixCameraOrientation = false;
-    
+
+    [Header("Read Only")]
+    [SerializeField]
+    float delay = 0;
+
     ROSConnection ros;
     public GameObject robotBaseLink;
 
@@ -81,6 +87,7 @@ public class MoveToTarget : MonoBehaviour
 
         ros.RegisterPublisher<TwistMsg>(cmdVelTopic);
         ros.Subscribe<GoalStatusArrayMsg>(moveBaseActionStatusTopic, MoveBaseStatusCallback);
+        ros.Subscribe<MoveBaseActionResult>(moveBaseActionResultTopic, MoveBaseActionResultCallback);
         ros.RegisterPublisher<TurnAngleActionGoal>(turnRobotActionTopic);
         ros.Subscribe<TurnAngleActionResult>(turnRobotActionResult, turnRobotActionResultCallback);
         ros.RegisterPublisher<MoveDistanceActionGoal>(moveDistanceActionTopic);
@@ -94,6 +101,8 @@ public class MoveToTarget : MonoBehaviour
         BaseController.OnMoveBackward += MoveTargetBackward;
         BaseController.OnMoveRobotToTarget += MoveRobotToTarget;
         BaseController.OnMoveTargetToRobot += MoveTargetToRobot;
+        BaseController.OnTiltCamDown += TiltCamDown;
+        BaseController.OnTiltCamUp += TiltCamUp;
 
 
         StartCoroutine(SetBaseLinkObject());
@@ -112,6 +121,11 @@ public class MoveToTarget : MonoBehaviour
         BaseController.OnMoveTargetToRobot -= MoveTargetToRobot;
     }
 
+    void Start()
+    {
+        delay = FindObjectOfType<ParticipantHandler>().delay;
+    }
+
     private IEnumerator SetBaseLinkObject()
     {
         while (robotBaseLink == null)
@@ -120,7 +134,6 @@ public class MoveToTarget : MonoBehaviour
             yield return null;
         }
         SetStartPosition();
-        StartCoroutine(TurnCamWithRobotAction());
     }
 
     private void MoveBaseStatusCallback(GoalStatusArrayMsg msg)
@@ -169,6 +182,22 @@ public class MoveToTarget : MonoBehaviour
         }
     }
 
+    private void TiltCamUp()
+    {
+        if (panTiltPublisher.tiltOffset > -90)
+        {
+            panTiltPublisher.tiltOffset -= cameraTurnSpeed * Time.deltaTime;
+        }
+    }
+    private void TiltCamDown()
+    {
+        if (panTiltPublisher.tiltOffset < 90)
+        {
+            panTiltPublisher.tiltOffset += cameraTurnSpeed * Time.deltaTime;
+        }
+    }
+
+
     private IEnumerator TurnRobotToCamCoroutine()
     {
         // Degrees per second
@@ -184,11 +213,11 @@ public class MoveToTarget : MonoBehaviour
             if (headingChange < -180) headingChange += 360;
             panTiltPublisher.panOffset -= headingChange;
             previousRobotHeading = currentRobotHeading;
-            ros.Publish(cmdVelTopic, twistMsg);
+            PublishWithDelay(cmdVelTopic, twistMsg);
             yield return null;
         }
         twistMsg = new TwistMsg();
-        ros.Publish(cmdVelTopic, twistMsg);
+        PublishWithDelay(cmdVelTopic, twistMsg);
         CentreCamera();
         MoveTargetToRobot();
     }
@@ -199,7 +228,7 @@ public class MoveToTarget : MonoBehaviour
         turnAngleGoal.turn_angle = - panTiltPublisher.panOffset * Mathf.Deg2Rad;
         TurnAngleActionGoal turnActionGoal = new TurnAngleActionGoal();
         turnActionGoal.goal = turnAngleGoal;
-        ros.Publish(turnRobotActionTopic, turnActionGoal);
+        PublishWithDelay(turnRobotActionTopic, turnActionGoal);
 
         previousRobotHeading = robotBaseLink.transform.eulerAngles.y;
         while (fixCameraOrientation || !turnActionComplete)
@@ -235,6 +264,11 @@ public class MoveToTarget : MonoBehaviour
         turnActionComplete = true;
     }
 
+    private void MoveBaseActionResultCallback(MoveBaseActionResult msg)
+    {
+        CentreCamera();
+    }
+
     private void SetStartPosition()
     {
         if (robotBaseLink != null)
@@ -263,7 +297,7 @@ public class MoveToTarget : MonoBehaviour
             targetPosition.header.frame_id = "map";
             targetPosition.pose.position = targetObject.transform.position.To<FLU>();
             targetPosition.pose.orientation = targetObject.transform.rotation.To<FLU>();
-            ros.Publish(goalTopicName, targetPosition);
+            PublishWithDelay(goalTopicName, targetPosition);
             moveBaseActionStatus = ActionStatus.IN_PROGRESS;
         }
 
@@ -290,7 +324,7 @@ public class MoveToTarget : MonoBehaviour
     {
         GoalIDMsg cancelGoal = new GoalIDMsg();
         foreach (var topic in cancelGoalTopicNames)
-            ros.Publish(topic, cancelGoal);
+            PublishWithDelay(topic, cancelGoal);
         MoveTargetToRobot();
         PublishTarget();
         CentreCamera();
@@ -334,7 +368,7 @@ public class MoveToTarget : MonoBehaviour
         MoveDistanceActionGoal moveDistanceActionGoal = new MoveDistanceActionGoal();
         moveDistanceActionGoal.goal = moveDistanceGoal;
 
-        ros.Publish(moveDistanceActionTopic, moveDistanceActionGoal);
+        PublishWithDelay(moveDistanceActionTopic, moveDistanceActionGoal);
     }
 
     private IEnumerator MoveRobotToTargetCoroutine(int direction)
@@ -345,12 +379,34 @@ public class MoveToTarget : MonoBehaviour
         TwistMsg twist = new TwistMsg(linear, angular);
         while (distance > 0.05)
         {
-            ros.Publish(cmdVelTopic, twist);
+            PublishWithDelay(cmdVelTopic, twist);
             distance = Vector3.Distance(targetObject.transform.position, robotBaseLink.transform.position);
             yield return null;
         }
-        ros.Publish(cmdVelTopic, new TwistMsg());
+        PublishWithDelay(cmdVelTopic, new TwistMsg());
     }
 
+    public void PublishWithDelay(string topic, Unity.Robotics.ROSTCPConnector.MessageGeneration.Message message)
+    {
+        StartCoroutine(PublishWithDelayCoroutine(topic, message));
+    }
 
+    private IEnumerator PublishWithDelayCoroutine(string topic, Unity.Robotics.ROSTCPConnector.MessageGeneration.Message message)
+    {
+        yield return new WaitForSeconds(delay);
+        ros.Publish(topic, message);
+    }
+
+    private void Update()
+    {
+        if (robotBaseLink!= null && fixCameraOrientation)
+        {
+            float currentRobotHeading = robotBaseLink.transform.eulerAngles.y;
+            float headingChange = currentRobotHeading - previousRobotHeading;
+            if (headingChange > 180) headingChange -= 360;
+            if (headingChange < -180) headingChange += 360;
+            panTiltPublisher.panOffset -= headingChange;
+            previousRobotHeading = currentRobotHeading;
+        }
+    }
 }

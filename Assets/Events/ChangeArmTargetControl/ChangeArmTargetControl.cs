@@ -9,13 +9,32 @@ public class ChangeArmTargetControl : ScriptableObject
     {
         TargetPositionControl,
         SpecialFunctions,
+        ConfirmActionSuccess
     }
 
     public ControlMode controlMode;
 
     public void ChangeControlMode()
     {
-        controlMode = (controlMode != ControlMode.SpecialFunctions) ? controlMode + 1 : 0;
+        switch (controlMode)
+        {
+            case ControlMode.TargetPositionControl:
+                controlMode = ControlMode.SpecialFunctions;
+                break;
+            case ControlMode.SpecialFunctions:
+                controlMode = ControlMode.TargetPositionControl;
+                break;
+            case ControlMode.ConfirmActionSuccess:
+                controlMode = ControlMode.SpecialFunctions;
+                break;
+        }
+        TriggerEvent();
+    }
+
+    public void SetControlMode(ControlMode control)
+    {
+        controlMode = control;
+        TriggerEvent();
     }
 
     private List<ChangeArmTargetControlListener> listeners = new List<ChangeArmTargetControlListener>();

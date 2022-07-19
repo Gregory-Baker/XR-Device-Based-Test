@@ -57,6 +57,10 @@ namespace Valve.VR
         
         private static SteamVR_Action_Vector2 p_arm_movement_targetRotationAndHeight;
         
+        private static SteamVR_Action_Boolean p_arm_movement_NoResponse;
+        
+        private static SteamVR_Action_Boolean p_arm_movement_YesResponse;
+        
         private static SteamVR_Action_Pose p_common_controls_Pose;
         
         private static SteamVR_Action_Boolean p_common_controls_ChangeActionSet;
@@ -233,6 +237,22 @@ namespace Valve.VR
             }
         }
         
+        public static SteamVR_Action_Boolean arm_movement_NoResponse
+        {
+            get
+            {
+                return SteamVR_Actions.p_arm_movement_NoResponse.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean arm_movement_YesResponse
+        {
+            get
+            {
+                return SteamVR_Actions.p_arm_movement_YesResponse.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
         public static SteamVR_Action_Pose common_controls_Pose
         {
             get
@@ -320,6 +340,8 @@ namespace Valve.VR
                     SteamVR_Actions.arm_movement_actuateGripper,
                     SteamVR_Actions.arm_movement_stopArm,
                     SteamVR_Actions.arm_movement_targetRotationAndHeight,
+                    SteamVR_Actions.arm_movement_NoResponse,
+                    SteamVR_Actions.arm_movement_YesResponse,
                     SteamVR_Actions.common_controls_Pose,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
@@ -348,6 +370,8 @@ namespace Valve.VR
                     SteamVR_Actions.arm_movement_actuateGripper,
                     SteamVR_Actions.arm_movement_stopArm,
                     SteamVR_Actions.arm_movement_targetRotationAndHeight,
+                    SteamVR_Actions.arm_movement_NoResponse,
+                    SteamVR_Actions.arm_movement_YesResponse,
                     SteamVR_Actions.common_controls_Pose,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
@@ -377,6 +401,8 @@ namespace Valve.VR
                     SteamVR_Actions.arm_movement_changeControlMode,
                     SteamVR_Actions.arm_movement_actuateGripper,
                     SteamVR_Actions.arm_movement_stopArm,
+                    SteamVR_Actions.arm_movement_NoResponse,
+                    SteamVR_Actions.arm_movement_YesResponse,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
                     SteamVR_Actions.common_controls_Activate,
@@ -411,6 +437,8 @@ namespace Valve.VR
                     SteamVR_Actions.arm_movement_actuateGripper,
                     SteamVR_Actions.arm_movement_stopArm,
                     SteamVR_Actions.arm_movement_targetRotationAndHeight,
+                    SteamVR_Actions.arm_movement_NoResponse,
+                    SteamVR_Actions.arm_movement_YesResponse,
                     SteamVR_Actions.common_controls_ChangeActionSet,
                     SteamVR_Actions.common_controls_Select,
                     SteamVR_Actions.common_controls_Activate,
@@ -442,6 +470,8 @@ namespace Valve.VR
             SteamVR_Actions.p_arm_movement_actuateGripper = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/actuateGripper")));
             SteamVR_Actions.p_arm_movement_stopArm = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/stopArm")));
             SteamVR_Actions.p_arm_movement_targetRotationAndHeight = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/arm_movement/in/targetRotationAndHeight")));
+            SteamVR_Actions.p_arm_movement_NoResponse = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/NoResponse")));
+            SteamVR_Actions.p_arm_movement_YesResponse = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/arm_movement/in/YesResponse")));
             SteamVR_Actions.p_common_controls_Pose = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/common_controls/in/Pose")));
             SteamVR_Actions.p_common_controls_ChangeActionSet = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/common_controls/in/ChangeActionSet")));
             SteamVR_Actions.p_common_controls_Select = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/common_controls/in/Select")));

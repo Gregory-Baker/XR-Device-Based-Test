@@ -67,7 +67,7 @@ public class RosHeadRotationPublisher : MonoBehaviour
     public void CentreCamera()
     {
         panOffset = 0;
-        tiltOffset = 0;
+        // tiltOffset = 0;
     }
 
     public IEnumerator CentreCameraCoroutine(float speed)

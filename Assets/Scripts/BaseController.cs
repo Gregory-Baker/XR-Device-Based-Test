@@ -5,9 +5,12 @@ using Valve.VR;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
 using UnityEditor.PackageManager;
+using UnityEngine.InputSystem;
 
 public class BaseController : MonoBehaviour
 {
+    KeyboardTeleop inputActions;
+
     [Header("SteamVR Input Source")]
     public SteamVR_Input_Sources inputSource = SteamVR_Input_Sources.Any;
 
@@ -32,6 +35,12 @@ public class BaseController : MonoBehaviour
     public SteamVR_Action_Boolean turnCamRightAction = null;
     public delegate void TurnCamRight();
     public static event TurnCamRight OnTurnCamRight;
+
+    public delegate void TiltCamUp();
+    public static event TiltCamUp OnTiltCamUp;
+
+    public delegate void TiltCamDown();
+    public static event TiltCamDown OnTiltCamDown;
 
     public delegate void TurnRobotToCamAction();
     public static event TurnRobotToCamAction OnTurnRobotToCam;
@@ -69,9 +78,29 @@ public class BaseController : MonoBehaviour
     public bool robotStopCommanded = false;
     int moveDirection = 1;
 
+    private void Awake()
+    {
+        inputActions = new KeyboardTeleop();
+
+        inputActions.FindAction("GoToGoal").started += confirmTargetKeyboard;
+
+        inputActions.FindAction("MoveRobotForward").started += strafeTargetKeyboard;
+        inputActions.FindAction("MoveRobotForward").canceled += strafeTargetKeyboardUp;
+        inputActions.FindAction("TurnRobot").started += turnRobotKeyboard;
+        inputActions.FindAction("TurnRobot").canceled += turnRobotKeyboardUp;
+
+        inputActions.FindAction("StopRobot").started += stopRobot;
+
+        inputActions.FindAction("TurnCam").started += turnRobotKeyboard;
+
+        inputActions.FindAction("TiltCam").started += tiltCamKeyboard;
+
+    }
+
     // Start is called before the first frame update
     void OnEnable()
     {
+        inputActions.Enable();
 
         xrRayInteractor = xrRayObject.GetComponent<XRRayInteractor>();
         xrLineVisual = xrRayObject.GetComponent<XRInteractorLineVisual>();
@@ -105,30 +134,114 @@ public class BaseController : MonoBehaviour
     // Update is called once per frame
     void OnDisable()
     {
-        targetSelectAction[inputSource].onStateDown -= enableTargetSelection;
-        targetSelectAction[inputSource].onStateDown -= disableTargetSelection;
+        inputActions.Disable();
 
-        targetRotation[inputSource].onAxis -= turnTarget;
-        strafeTargetAction[inputSource].onAxis -= strafeTarget;
-        targetConfirmAction[inputSource].onStateDown -= confirmTarget;
+    }
 
-        turnCamLeftAction[inputSource].onStateDown -= MoveTargetToRobot;
-        turnCamLeftAction[inputSource].onState -= turnCamLeft;
-        turnCamLeftAction[inputSource].onStateUp -= TurnRobotToCamera;
+    private void strafeTargetKeyboardUp(InputAction.CallbackContext obj)
+    {
+        if (OnMoveRobotToTarget != null)
+        {
+            OnMoveRobotToTarget(moveDirection);
+        }
+    }
 
-        turnCamRightAction[inputSource].onStateDown -= MoveTargetToRobot;
-        turnCamRightAction[inputSource].onStateUp -= TurnRobotToCamera;
-        turnCamRightAction[inputSource].onState -= turnCamRight;
+    private void strafeTargetKeyboard(InputAction.CallbackContext obj)
+    {
+        StartCoroutine(strafeTargetKeyboardCoroutine(obj));
+    }
 
-        moveForwardAction[inputSource].onStateDown -= MoveTargetToRobot;
-        moveForwardAction[inputSource].onState -= MoveTargetForward;
-        moveForwardAction[inputSource].onStateUp -= MoveRobotToTarget;
+    private IEnumerator strafeTargetKeyboardCoroutine(InputAction.CallbackContext obj)
+    {
+        while (Mathf.Abs(obj.ReadValue<float>()) > 0.1)
+        {
+            moveDirection = (int)obj.ReadValue<float>();
+            if (moveDirection > 0)
+            {
+                moveDirection = 1;
+                if (OnMoveForward != null)
+                {
+                    OnMoveForward();
+                }
+            }
+            else
+            {
+                moveDirection = -1;
+                if (OnMoveBackward != null)
+                {
+                    OnMoveBackward();
+                }
+            }
 
-        moveBackwardAction[inputSource].onStateDown -= MoveTargetToRobot;
-        moveBackwardAction[inputSource].onState -= MoveTargetBackward;
-        moveBackwardAction[inputSource].onStateUp -= MoveRobotToTarget;
+            yield return null;
+        }
+    }
 
-        stopAction[inputSource].onStateDown -= stopRobot;
+
+    private void turnRobotKeyboard(InputAction.CallbackContext obj)
+    {
+        StartCoroutine(turnCamKeyboardCoroutine(obj));
+    }
+
+    private IEnumerator turnCamKeyboardCoroutine(InputAction.CallbackContext obj)
+    {
+        while (Mathf.Abs(obj.ReadValue<float>()) > 0.1)
+        {
+            int turnDirection = (int)obj.ReadValue<float>();
+            if (turnDirection < 0)
+            {
+                if (OnTurnCamLeft != null)
+                {
+                    OnTurnCamLeft();
+                }
+            }
+            else
+            {
+                if (OnTurnCamRight != null)
+                {
+                    OnTurnCamRight();
+                }
+            }
+
+            yield return null;
+        }
+
+    }
+    
+    private void tiltCamKeyboard(InputAction.CallbackContext obj)
+    {
+        StartCoroutine(tiltCamKeyboardCoroutine(obj));
+    }
+
+    private IEnumerator tiltCamKeyboardCoroutine(InputAction.CallbackContext obj)
+    {
+        while (Mathf.Abs(obj.ReadValue<float>()) > 0.1)
+        {
+            int tiltDirection = (int)obj.ReadValue<float>();
+            if (tiltDirection < 0)
+            {
+                if (OnTiltCamDown != null)
+                {
+                    OnTiltCamDown();
+                }
+            }
+            else
+            {
+                if (OnTiltCamUp != null)
+                {
+                    OnTiltCamUp();
+                }
+            }
+
+            yield return null;
+        }
+
+    }
+
+    private void turnRobotKeyboardUp(InputAction.CallbackContext obj)
+    {
+        if (OnTurnRobotToCam != null)
+            OnTurnRobotToCam();
     }
 
     private void MoveTargetToRobot(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -178,6 +291,14 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    private void confirmTargetKeyboard(InputAction.CallbackContext obj)
+    {
+        if (OnConfirm != null)
+        {
+            OnConfirm();
+        }
+    }
+
     private void turnCamLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         if (OnTurnCamLeft != null)
@@ -211,6 +332,7 @@ public class BaseController : MonoBehaviour
             OnMoveBackward();
         }
     }
+
 
     private void MoveRobotToTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
@@ -254,6 +376,14 @@ public class BaseController : MonoBehaviour
     }
 
     private void stopRobot(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        robotStopCommanded = true;
+        if (OnStop != null)
+        {
+            OnStop();
+        }
+    }
+    private void stopRobot(InputAction.CallbackContext obj)
     {
         robotStopCommanded = true;
         if (OnStop != null)

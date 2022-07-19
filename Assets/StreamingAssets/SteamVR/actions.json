@@ -83,6 +83,14 @@
       "type": "vector2"
     },
     {
+      "name": "/actions/arm_movement/in/NoResponse",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/arm_movement/in/YesResponse",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/common_controls/in/Pose",
       "type": "pose"
     },

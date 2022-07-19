@@ -72,5 +72,21 @@ namespace Valve.VR
                 return SteamVR_Actions.arm_movement_targetRotationAndHeight;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean NoResponse
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_NoResponse;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean YesResponse
+        {
+            get
+            {
+                return SteamVR_Actions.arm_movement_YesResponse;
+            }
+        }
     }
 }

@@ -21,6 +21,8 @@ public class ArmControllerSteer : MonoBehaviour
     public SteamVR_Action_Boolean actuateGripper = null;
     public SteamVR_Action_Vector2 moveTargetInPlane = null;
     public SteamVR_Action_Vector2 moveTargetUpDownRotate = null;
+    public SteamVR_Action_Boolean noResponse = null;
+    public SteamVR_Action_Boolean yesResponse = null;
     public SteamVR_Action_Boolean stopArm = null;
 
     [Header("Parameters")]
@@ -40,6 +42,9 @@ public class ArmControllerSteer : MonoBehaviour
     public UnityEvent onStopEvents;
     public UnityEvent onConfirmTargetEvents;
     public UnityEvent onActuateGripperEvents;
+    public UnityEvent yesResponseEvents;
+    public UnityEvent noResponseEvents;
+
 
 
     private void OnEnable()
@@ -49,6 +54,8 @@ public class ArmControllerSteer : MonoBehaviour
         actuateGripper[inputSource].onStateDown += ActuateGripper;
         moveTargetInPlane[inputSource].onAxis += MoveTargetInPlane;
         moveTargetUpDownRotate[inputSource].onAxis += MoveTargetUpDownRotate;
+        noResponse[inputSource].onStateDown += TriggerNoResponseEvents;
+        yesResponse[inputSource].onStateDown += TriggerYesResponseEvents;
         stopArm[inputSource].onStateDown += StopArm;
 
         SetControlModeToPosition();
@@ -61,12 +68,25 @@ public class ArmControllerSteer : MonoBehaviour
         actuateGripper[inputSource].onStateDown -= ActuateGripper;
         moveTargetInPlane[inputSource].onAxis -= MoveTargetInPlane;
         moveTargetUpDownRotate[inputSource].onAxis -= MoveTargetUpDownRotate;
+        noResponse[inputSource].onStateDown -= TriggerNoResponseEvents;
+        yesResponse[inputSource].onStateDown -= TriggerYesResponseEvents;
         stopArm[inputSource].onStateDown -= StopArm;
     }
 
+    private void TriggerYesResponseEvents(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.ConfirmActionSuccess)
+            yesResponseEvents.Invoke();
+    }
+
+    private void TriggerNoResponseEvents(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.ConfirmActionSuccess)
+            noResponseEvents.Invoke();
+    }
+
     public void SetControlModeToPosition() {
-        changeArmTargetControl.controlMode = ChangeArmTargetControl.ControlMode.TargetPositionControl;
-        changeArmTargetControl.TriggerEvent();
+        changeArmTargetControl.SetControlMode(ChangeArmTargetControl.ControlMode.TargetPositionControl);
     }
 
     private void StopArm(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -87,7 +107,7 @@ public class ArmControllerSteer : MonoBehaviour
     private void ChangeControlMode(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         changeArmTargetControl.ChangeControlMode();
-        changeArmTargetControl.TriggerEvent();
+        // changeArmTargetControl.TriggerEvent();
     }
 
     private void MoveTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
