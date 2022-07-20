@@ -14,10 +14,17 @@ public class ParticipantHandler : MonoBehaviour
         WaypointDelay
     }
 
+    public enum TeleopInterface
+    {
+        VR,
+        Screen
+    }
+
     [Header("Condition")]
     public int participantID;
 
     public Condition condition;
+    public TeleopInterface teleopInterface;
 
 
     [Header("Read Only Settings")]

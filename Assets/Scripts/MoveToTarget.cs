@@ -159,26 +159,39 @@ public class MoveToTarget : MonoBehaviour
 
     private void TurnRobotToCam()
     {
-        MoveConfirmToTarget();
-        // StartCoroutine(TurnRobotToCamCoroutine());
-        StartCoroutine(TurnCamWithRobotAction());
-    }
-
-    private void TurnCamLeft()
-    {
-        if (moveBaseActionStatus != ActionStatus.IN_PROGRESS && panTiltPublisher.panOffset > -179)
+        if (moveBaseActionStatus != ActionStatus.IN_PROGRESS)
         {
-            panTiltPublisher.panOffset -= cameraTurnSpeed * Time.deltaTime;
-            targetObject.transform.Rotate(Vector3.up, -cameraTurnSpeed * Time.deltaTime);
+            MoveConfirmToTarget();
+            // StartCoroutine(TurnRobotToCamCoroutine());
+            StartCoroutine(TurnCamWithRobotAction());
         }
     }
 
-    private void TurnCamRight()
+    private void TurnCamLeft(bool turnTarget)
     {
-        if (moveBaseActionStatus != ActionStatus.IN_PROGRESS && panTiltPublisher.panOffset < 179)
+        if (panTiltPublisher.panOffset > -179)
+        {
+            panTiltPublisher.panOffset -= cameraTurnSpeed * Time.deltaTime;
+
+            if (turnTarget)
+            {
+                targetObject.transform.Rotate(Vector3.up, -cameraTurnSpeed * Time.deltaTime);
+            }
+                
+        }
+    }
+
+    private void TurnCamRight(bool turnTarget)
+    {
+        if (panTiltPublisher.panOffset < 179)
         {
             panTiltPublisher.panOffset += cameraTurnSpeed * Time.deltaTime;
-            targetObject.transform.Rotate(Vector3.up, cameraTurnSpeed * Time.deltaTime);
+
+            if (turnTarget)
+            {
+                targetObject.transform.Rotate(Vector3.up, cameraTurnSpeed * Time.deltaTime);
+            }
+            
         }
     }
 
@@ -244,19 +257,21 @@ public class MoveToTarget : MonoBehaviour
         turnActionComplete = false;
         CentreCamera();
 
-        MoveTargetToRobot();
+        MoveConfirmToRobot();
     }
 
     private void CentreCamera()
     {
-        if (fixCameraOrientation)
-        {
-            StartCoroutine(panTiltPublisher.CentreCameraCoroutine(cameraTurnSpeed));
-        }
-        else
-        {
-            panTiltPublisher.CentreCamera();
-        }
+        StartCoroutine(panTiltPublisher.CentreCameraCoroutine(cameraTurnSpeed));
+
+        //if (fixCameraOrientation)
+        //{
+        //    StartCoroutine(panTiltPublisher.CentreCameraCoroutine(cameraTurnSpeed));
+        //}
+        //else
+        //{
+        //    panTiltPublisher.CentreCamera();
+        //}
     }
 
     private void turnRobotActionResultCallback(TurnAngleActionResult msg)
@@ -325,7 +340,7 @@ public class MoveToTarget : MonoBehaviour
         GoalIDMsg cancelGoal = new GoalIDMsg();
         foreach (var topic in cancelGoalTopicNames)
             PublishWithDelay(topic, cancelGoal);
-        MoveTargetToRobot();
+        MoveTargetAndConfirmToRobot();
         PublishTarget();
         CentreCamera();
     }
@@ -336,6 +351,16 @@ public class MoveToTarget : MonoBehaviour
     }
 
     public void MoveTargetToRobot()
+    {
+        targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
+    }
+
+    public void MoveConfirmToRobot()
+    {
+        transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
+    }
+
+    public void MoveTargetAndConfirmToRobot()
     {
         targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
         transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);

@@ -2,6 +2,34 @@
     "name": "KeyboardTeleop",
     "maps": [
         {
+            "name": "Common",
+            "id": "1b3b4bfa-7c31-47f1-9314-4800c86b85e1",
+            "actions": [
+                {
+                    "name": "ChangeActionSet",
+                    "type": "Button",
+                    "id": "a1012cb8-44bc-480d-98fb-2d9051388259",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0a0782ad-1b83-4161-b9dd-c6648c4b754b",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeActionSet",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Keyboard",
             "id": "6f09051f-0fea-4db3-bf33-a9862957dd6b",
             "actions": [
@@ -212,6 +240,120 @@
                     "processors": "",
                     "groups": "",
                     "action": "TiltCam",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "Arm",
+            "id": "ebe21060-b688-4947-8db4-71dd35398810",
+            "actions": [
+                {
+                    "name": "FBLR",
+                    "type": "Value",
+                    "id": "ce197f90-40b2-426d-8b59-53382dcaf2a1",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "UpDown",
+                    "type": "Button",
+                    "id": "8455f04a-2576-4dc5-844d-f4791a441461",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "2D Vector",
+                    "id": "adfeba32-4bd3-472b-947b-9825bf466d88",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FBLR",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "6ae40d00-8410-4a3d-b33b-634d1eb7192a",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FBLR",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "664a10a0-ad4a-471e-83b1-f4521525bba0",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FBLR",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "d22044d6-a013-435d-a7b7-122a432c73d8",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FBLR",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "1ce8317c-43f2-4557-946a-1435d03cf4d4",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FBLR",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "18ac96af-2450-4cbd-9e5b-91365960e10f",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UpDown",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "b4be864a-65f9-4d44-9c00-dbd43d065c99",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UpDown",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "48e54738-4884-4aa6-a9b8-d140b746e137",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UpDown",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

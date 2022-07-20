@@ -24,6 +24,34 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
     ""name"": ""KeyboardTeleop"",
     ""maps"": [
         {
+            ""name"": ""Common"",
+            ""id"": ""1b3b4bfa-7c31-47f1-9314-4800c86b85e1"",
+            ""actions"": [
+                {
+                    ""name"": ""ChangeActionSet"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1012cb8-44bc-480d-98fb-2d9051388259"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""0a0782ad-1b83-4161-b9dd-c6648c4b754b"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeActionSet"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Keyboard"",
             ""id"": ""6f09051f-0fea-4db3-bf33-a9862957dd6b"",
             ""actions"": [
@@ -238,10 +266,127 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Arm"",
+            ""id"": ""ebe21060-b688-4947-8db4-71dd35398810"",
+            ""actions"": [
+                {
+                    ""name"": ""FBLR"",
+                    ""type"": ""Value"",
+                    ""id"": ""ce197f90-40b2-426d-8b59-53382dcaf2a1"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""UpDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""8455f04a-2576-4dc5-844d-f4791a441461"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""adfeba32-4bd3-472b-947b-9825bf466d88"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FBLR"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""6ae40d00-8410-4a3d-b33b-634d1eb7192a"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FBLR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""664a10a0-ad4a-471e-83b1-f4521525bba0"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FBLR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""d22044d6-a013-435d-a7b7-122a432c73d8"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FBLR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""1ce8317c-43f2-4557-946a-1435d03cf4d4"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FBLR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""18ac96af-2450-4cbd-9e5b-91365960e10f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UpDown"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""b4be864a-65f9-4d44-9c00-dbd43d065c99"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UpDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""48e54738-4884-4aa6-a9b8-d140b746e137"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UpDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
 }");
+        // Common
+        m_Common = asset.FindActionMap("Common", throwIfNotFound: true);
+        m_Common_ChangeActionSet = m_Common.FindAction("ChangeActionSet", throwIfNotFound: true);
         // Keyboard
         m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
         m_Keyboard_GoToGoal = m_Keyboard.FindAction("GoToGoal", throwIfNotFound: true);
@@ -250,6 +395,10 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         m_Keyboard_TurnCam = m_Keyboard.FindAction("TurnCam", throwIfNotFound: true);
         m_Keyboard_StopRobot = m_Keyboard.FindAction("StopRobot", throwIfNotFound: true);
         m_Keyboard_TiltCam = m_Keyboard.FindAction("TiltCam", throwIfNotFound: true);
+        // Arm
+        m_Arm = asset.FindActionMap("Arm", throwIfNotFound: true);
+        m_Arm_FBLR = m_Arm.FindAction("FBLR", throwIfNotFound: true);
+        m_Arm_UpDown = m_Arm.FindAction("UpDown", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -305,6 +454,39 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
     {
         return asset.FindBinding(bindingMask, out action);
     }
+
+    // Common
+    private readonly InputActionMap m_Common;
+    private ICommonActions m_CommonActionsCallbackInterface;
+    private readonly InputAction m_Common_ChangeActionSet;
+    public struct CommonActions
+    {
+        private @KeyboardTeleop m_Wrapper;
+        public CommonActions(@KeyboardTeleop wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ChangeActionSet => m_Wrapper.m_Common_ChangeActionSet;
+        public InputActionMap Get() { return m_Wrapper.m_Common; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CommonActions set) { return set.Get(); }
+        public void SetCallbacks(ICommonActions instance)
+        {
+            if (m_Wrapper.m_CommonActionsCallbackInterface != null)
+            {
+                @ChangeActionSet.started -= m_Wrapper.m_CommonActionsCallbackInterface.OnChangeActionSet;
+                @ChangeActionSet.performed -= m_Wrapper.m_CommonActionsCallbackInterface.OnChangeActionSet;
+                @ChangeActionSet.canceled -= m_Wrapper.m_CommonActionsCallbackInterface.OnChangeActionSet;
+            }
+            m_Wrapper.m_CommonActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ChangeActionSet.started += instance.OnChangeActionSet;
+                @ChangeActionSet.performed += instance.OnChangeActionSet;
+                @ChangeActionSet.canceled += instance.OnChangeActionSet;
+            }
+        }
+    }
+    public CommonActions @Common => new CommonActions(this);
 
     // Keyboard
     private readonly InputActionMap m_Keyboard;
@@ -378,6 +560,51 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         }
     }
     public KeyboardActions @Keyboard => new KeyboardActions(this);
+
+    // Arm
+    private readonly InputActionMap m_Arm;
+    private IArmActions m_ArmActionsCallbackInterface;
+    private readonly InputAction m_Arm_FBLR;
+    private readonly InputAction m_Arm_UpDown;
+    public struct ArmActions
+    {
+        private @KeyboardTeleop m_Wrapper;
+        public ArmActions(@KeyboardTeleop wrapper) { m_Wrapper = wrapper; }
+        public InputAction @FBLR => m_Wrapper.m_Arm_FBLR;
+        public InputAction @UpDown => m_Wrapper.m_Arm_UpDown;
+        public InputActionMap Get() { return m_Wrapper.m_Arm; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ArmActions set) { return set.Get(); }
+        public void SetCallbacks(IArmActions instance)
+        {
+            if (m_Wrapper.m_ArmActionsCallbackInterface != null)
+            {
+                @FBLR.started -= m_Wrapper.m_ArmActionsCallbackInterface.OnFBLR;
+                @FBLR.performed -= m_Wrapper.m_ArmActionsCallbackInterface.OnFBLR;
+                @FBLR.canceled -= m_Wrapper.m_ArmActionsCallbackInterface.OnFBLR;
+                @UpDown.started -= m_Wrapper.m_ArmActionsCallbackInterface.OnUpDown;
+                @UpDown.performed -= m_Wrapper.m_ArmActionsCallbackInterface.OnUpDown;
+                @UpDown.canceled -= m_Wrapper.m_ArmActionsCallbackInterface.OnUpDown;
+            }
+            m_Wrapper.m_ArmActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @FBLR.started += instance.OnFBLR;
+                @FBLR.performed += instance.OnFBLR;
+                @FBLR.canceled += instance.OnFBLR;
+                @UpDown.started += instance.OnUpDown;
+                @UpDown.performed += instance.OnUpDown;
+                @UpDown.canceled += instance.OnUpDown;
+            }
+        }
+    }
+    public ArmActions @Arm => new ArmActions(this);
+    public interface ICommonActions
+    {
+        void OnChangeActionSet(InputAction.CallbackContext context);
+    }
     public interface IKeyboardActions
     {
         void OnGoToGoal(InputAction.CallbackContext context);
@@ -386,5 +613,10 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         void OnTurnCam(InputAction.CallbackContext context);
         void OnStopRobot(InputAction.CallbackContext context);
         void OnTiltCam(InputAction.CallbackContext context);
+    }
+    public interface IArmActions
+    {
+        void OnFBLR(InputAction.CallbackContext context);
+        void OnUpDown(InputAction.CallbackContext context);
     }
 }

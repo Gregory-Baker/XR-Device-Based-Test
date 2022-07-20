@@ -29,11 +29,11 @@ public class BaseController : MonoBehaviour
 
 
     public SteamVR_Action_Boolean turnCamLeftAction = null;
-    public delegate void TurnCamLeft();
+    public delegate void TurnCamLeft(bool turnTarget);
     public static event TurnCamLeft OnTurnCamLeft;
 
     public SteamVR_Action_Boolean turnCamRightAction = null;
-    public delegate void TurnCamRight();
+    public delegate void TurnCamRight(bool turnTarget);
     public static event TurnCamRight OnTurnCamRight;
 
     public delegate void TiltCamUp();
@@ -77,33 +77,20 @@ public class BaseController : MonoBehaviour
     float directionLast = 0;
     public bool robotStopCommanded = false;
     int moveDirection = 1;
+    float scrollTurnWheelScale = 0.2f;
 
     private void Awake()
     {
         inputActions = new KeyboardTeleop();
 
-        inputActions.FindAction("GoToGoal").started += confirmTargetKeyboard;
-
-        inputActions.FindAction("MoveRobotForward").started += strafeTargetKeyboard;
-        inputActions.FindAction("MoveRobotForward").canceled += strafeTargetKeyboardUp;
-        inputActions.FindAction("TurnRobot").started += turnRobotKeyboard;
-        inputActions.FindAction("TurnRobot").canceled += turnRobotKeyboardUp;
-
-        inputActions.FindAction("StopRobot").started += stopRobot;
-
-        inputActions.FindAction("TurnCam").started += turnRobotKeyboard;
-
-        inputActions.FindAction("TiltCam").started += tiltCamKeyboard;
-
-    }
-
-    // Start is called before the first frame update
-    void OnEnable()
-    {
-        inputActions.Enable();
-
-        xrRayInteractor = xrRayObject.GetComponent<XRRayInteractor>();
-        xrLineVisual = xrRayObject.GetComponent<XRInteractorLineVisual>();
+        inputActions.Keyboard.GoToGoal.started += confirmTargetKeyboard;
+        inputActions.Keyboard.MoveRobotForward.started += strafeTargetKeyboard;
+        inputActions.Keyboard.MoveRobotForward.canceled += strafeTargetKeyboardUp;
+        inputActions.Keyboard.TurnRobot.started += turnRobotKeyboard;
+        inputActions.Keyboard.TurnRobot.canceled += turnRobotKeyboardUp;
+        inputActions.Keyboard.StopRobot.started += stopRobot;
+        inputActions.Keyboard.TurnCam.started += turnCamKeyboard;
+        inputActions.Keyboard.TiltCam.started += tiltCamKeyboard;
 
         targetSelectAction[inputSource].onStateDown += enableTargetSelection;
         targetSelectAction[inputSource].onStateUp += disableTargetSelection;
@@ -129,12 +116,24 @@ public class BaseController : MonoBehaviour
         moveBackwardAction[inputSource].onStateUp += MoveRobotToTarget;
 
         stopAction[inputSource].onStateDown += stopRobot;
+
+
+    }
+
+    // Start is called before the first frame update
+    void OnEnable()
+    {
+        inputActions.Keyboard.Enable();
+
+        xrRayInteractor = xrRayObject.GetComponent<XRRayInteractor>();
+        xrLineVisual = xrRayObject.GetComponent<XRInteractorLineVisual>();
+
     }
 
     // Update is called once per frame
     void OnDisable()
     {
-        inputActions.Disable();
+        inputActions.Keyboard.Disable();
 
     }
 
@@ -148,6 +147,11 @@ public class BaseController : MonoBehaviour
 
     private void strafeTargetKeyboard(InputAction.CallbackContext obj)
     {
+        if (OnMoveTargetToRobot != null)
+        {
+            OnMoveTargetToRobot();
+        }
+
         StartCoroutine(strafeTargetKeyboardCoroutine(obj));
     }
 
@@ -180,10 +184,19 @@ public class BaseController : MonoBehaviour
 
     private void turnRobotKeyboard(InputAction.CallbackContext obj)
     {
-        StartCoroutine(turnCamKeyboardCoroutine(obj));
+        if (OnMoveTargetToRobot != null)
+        {
+            OnMoveTargetToRobot();
+        }
+        StartCoroutine(turnCamKeyboardCoroutine(obj, true));
     }
 
-    private IEnumerator turnCamKeyboardCoroutine(InputAction.CallbackContext obj)
+    private void turnCamKeyboard(InputAction.CallbackContext obj)
+    {
+        StartCoroutine(turnCamKeyboardCoroutine(obj, false));
+    }
+
+    private IEnumerator turnCamKeyboardCoroutine(InputAction.CallbackContext obj, bool turnTarget = true)
     {
         while (Mathf.Abs(obj.ReadValue<float>()) > 0.1)
         {
@@ -192,14 +205,14 @@ public class BaseController : MonoBehaviour
             {
                 if (OnTurnCamLeft != null)
                 {
-                    OnTurnCamLeft();
+                    OnTurnCamLeft(turnTarget);
                 }
             }
             else
             {
                 if (OnTurnCamRight != null)
                 {
-                    OnTurnCamRight();
+                    OnTurnCamRight(turnTarget);
                 }
             }
 
@@ -303,7 +316,7 @@ public class BaseController : MonoBehaviour
     {
         if (OnTurnCamLeft != null)
         {
-            OnTurnCamLeft();
+            OnTurnCamLeft(true);
         }
     }
 
@@ -311,7 +324,7 @@ public class BaseController : MonoBehaviour
     {
         if (OnTurnCamRight != null)
         {
-            OnTurnCamRight();
+            OnTurnCamRight(true);
         }
     }
 
@@ -389,6 +402,15 @@ public class BaseController : MonoBehaviour
         if (OnStop != null)
         {
             OnStop();
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (Mathf.Abs(Input.mouseScrollDelta.y) > 0)
+        {
+            float rotation = Input.mouseScrollDelta.y * scrollTurnWheelScale;
+            xrLineVisual.reticle.transform.Rotate(new Vector3(0, Mathf.Rad2Deg * rotation * targetTurnMultiplier * Time.deltaTime, 0));
         }
     }
 }

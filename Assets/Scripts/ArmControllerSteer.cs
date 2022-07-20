@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using Valve.VR;
 
 public class ArmControllerSteer : MonoBehaviour
 {
+    KeyboardTeleop inputActions;
+
     [Header("Events")]
     public ChangeArmTargetControl changeArmTargetControl;
 
@@ -46,9 +49,12 @@ public class ArmControllerSteer : MonoBehaviour
     public UnityEvent noResponseEvents;
 
 
-
-    private void OnEnable()
+    private void Awake()
     {
+        inputActions = new KeyboardTeleop();
+
+        inputActions.Arm.FBLR.started += MoveTargetInPlaneKeyboard;
+
         changeControlMode[inputSource].onStateDown += ChangeControlMode;
         confirmTarget[inputSource].onStateDown += ConfirmTarget;
         actuateGripper[inputSource].onStateDown += ActuateGripper;
@@ -57,20 +63,18 @@ public class ArmControllerSteer : MonoBehaviour
         noResponse[inputSource].onStateDown += TriggerNoResponseEvents;
         yesResponse[inputSource].onStateDown += TriggerYesResponseEvents;
         stopArm[inputSource].onStateDown += StopArm;
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Arm.Enable();
 
         SetControlModeToPosition();
     }
 
     private void OnDisable()
     {
-        changeControlMode[inputSource].onStateDown -= ChangeControlMode;
-        confirmTarget[inputSource].onStateDown -= ConfirmTarget;
-        actuateGripper[inputSource].onStateDown -= ActuateGripper;
-        moveTargetInPlane[inputSource].onAxis -= MoveTargetInPlane;
-        moveTargetUpDownRotate[inputSource].onAxis -= MoveTargetUpDownRotate;
-        noResponse[inputSource].onStateDown -= TriggerNoResponseEvents;
-        yesResponse[inputSource].onStateDown -= TriggerYesResponseEvents;
-        stopArm[inputSource].onStateDown -= StopArm;
+        inputActions.Arm.Disable();
     }
 
     private void TriggerYesResponseEvents(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -132,6 +136,14 @@ public class ArmControllerSteer : MonoBehaviour
         // if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
             moveTargetFBLR(axis);
     }
+
+    private void MoveTargetInPlaneKeyboard(InputAction.CallbackContext obj)
+    {
+        var axis = obj.ReadValue<Vector2>();
+        moveTargetFBLR(axis);
+    }
+
+
 
     private void moveTargetFBLR(Vector2 axis)
     {
