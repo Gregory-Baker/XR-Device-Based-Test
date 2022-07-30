@@ -14,7 +14,10 @@ using RosMessageTypes.MoveBase;
 using RosMessageTypes.KinovaCustom;
 
 public class MoveToTarget : MonoBehaviour
-{    
+{
+    [SerializeField]
+    ParticipantHandler participantHandler;
+
     [SerializeField]
     GameObject targetObject = null;
 
@@ -123,7 +126,7 @@ public class MoveToTarget : MonoBehaviour
 
     void Start()
     {
-        delay = FindObjectOfType<ParticipantHandler>().delay;
+        delay = participantHandler.delay;
     }
 
     private IEnumerator SetBaseLinkObject()
@@ -143,7 +146,7 @@ public class MoveToTarget : MonoBehaviour
             var status = msg.status_list.Last().status;
             if (status == 3)
             {
-                moveBaseActionStatus = ActionStatus.SUCCEEDED;
+                moveBaseActionStatus = ActionStatus.SUCCEEDED;        
             }
             else if (status == 1)
             {
@@ -231,7 +234,7 @@ public class MoveToTarget : MonoBehaviour
         }
         twistMsg = new TwistMsg();
         PublishWithDelay(cmdVelTopic, twistMsg);
-        CentreCamera();
+        CentreCameraPan();
         MoveTargetToRobot();
     }
 
@@ -255,14 +258,14 @@ public class MoveToTarget : MonoBehaviour
             yield return null;
         }
         turnActionComplete = false;
-        CentreCamera();
+        CentreCameraPan();
 
         MoveConfirmToRobot();
     }
 
-    private void CentreCamera()
+    private void CentreCameraPan()
     {
-        StartCoroutine(panTiltPublisher.CentreCameraCoroutine(cameraTurnSpeed));
+        StartCoroutine(panTiltPublisher.CentreCameraPanCoroutine(cameraTurnSpeed));
 
         //if (fixCameraOrientation)
         //{
@@ -274,6 +277,11 @@ public class MoveToTarget : MonoBehaviour
         //}
     }
 
+    public void CentreCameraPanInstant()
+    {
+        panTiltPublisher.CentreCameraPan();
+    }
+
     private void turnRobotActionResultCallback(TurnAngleActionResult msg)
     {
         turnActionComplete = true;
@@ -281,7 +289,7 @@ public class MoveToTarget : MonoBehaviour
 
     private void MoveBaseActionResultCallback(MoveBaseActionResult msg)
     {
-        CentreCamera();
+        CentreCameraPan();
     }
 
     private void SetStartPosition()
@@ -332,7 +340,7 @@ public class MoveToTarget : MonoBehaviour
             previousRobotHeading = currentRobotHeading;
             yield return null;
         }
-        CentreCamera();
+        CentreCameraPan();
     }
 
     private void StopRobot()
@@ -341,8 +349,8 @@ public class MoveToTarget : MonoBehaviour
         foreach (var topic in cancelGoalTopicNames)
             PublishWithDelay(topic, cancelGoal);
         MoveTargetAndConfirmToRobot();
-        PublishTarget();
-        CentreCamera();
+        // PublishTarget();
+        CentreCameraPan();
     }
 
     private void MoveConfirmToTarget()
@@ -352,6 +360,7 @@ public class MoveToTarget : MonoBehaviour
 
     public void MoveTargetToRobot()
     {
+        CentreCameraPanInstant();
         targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
     }
 
@@ -433,5 +442,6 @@ public class MoveToTarget : MonoBehaviour
             panTiltPublisher.panOffset -= headingChange;
             previousRobotHeading = currentRobotHeading;
         }
+        delay = participantHandler.delay;
     }
 }

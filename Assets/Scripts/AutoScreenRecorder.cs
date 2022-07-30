@@ -7,7 +7,11 @@ using System;
 
 public class AutoScreenRecorder : MonoBehaviour
 {
-    public string participantID;
+    public ParticipantHandler participantHandler;
+
+    string participantID;
+    string control;
+    string delay;
 
     [SerializeField]
     private bool recording = false;
@@ -18,25 +22,31 @@ public class AutoScreenRecorder : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (participantID != "dev")
+        participantID = participantHandler.participantID.ToString();
+        control = participantHandler.controlMethod.ToString();
+        delay = participantHandler.delayCondition.ToString();
+
+        if (!participantHandler.tutorial)
         {
             controllerSettings = ScriptableObject.CreateInstance<RecorderControllerSettings>();
             TestRecorderController = new RecorderController(controllerSettings);
 
             var videoRecorder = ScriptableObject.CreateInstance<MovieRecorderSettings>();
-            videoRecorder.name = "Theta Recorder";
+            videoRecorder.name = "Experiment Recorder";
             videoRecorder.Enabled = true;
             videoRecorder.VideoBitRateMode = UnityEditor.VideoBitrateMode.High;
 
-            videoRecorder.ImageInputSettings = new GameViewInputSettings
+            videoRecorder.ImageInputSettings = new CameraInputSettings
             {
-                OutputWidth = 1920,
-                OutputHeight = 1080
+                Source = ImageSource.MainCamera,
+                FlipFinalOutput = true,
+                OutputWidth = 1280,
+                OutputHeight = 720
             };
 
             string folder = "C:/Users/g-baker-admin/Documents/MR_Waypoint_Experiment_Data/";
             string datetime = DateTime.Now.Date.Year + "_" + DateTime.Now.Date.Month + "_" + DateTime.Now.Date.Day + "-" + DateTime.Now.TimeOfDay.Hours + "_" + DateTime.Now.TimeOfDay.Minutes + "_" + DateTime.Now.TimeOfDay.Seconds;
-            string outfile = folder + participantID + "/" + participantID + "_" + datetime;
+            string outfile = folder + participantID + "/" + participantID + "_" + control + "_" + delay + "_" + datetime;
 
 
             videoRecorder.AudioInputSettings.PreserveAudio = false;
@@ -44,7 +54,7 @@ public class AutoScreenRecorder : MonoBehaviour
 
             controllerSettings.AddRecorderSettings(videoRecorder);
             controllerSettings.SetRecordModeToManual();
-            controllerSettings.FrameRate = 15;
+            controllerSettings.FrameRate = 60;
             controllerSettings.CapFrameRate = false;
 
             RecorderOptions.VerboseMode = false;

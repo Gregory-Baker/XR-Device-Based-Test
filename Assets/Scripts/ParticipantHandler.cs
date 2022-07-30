@@ -2,16 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [ExecuteInEditMode]
 public class ParticipantHandler : MonoBehaviour
 { 
-    public enum Condition
+    public enum ControlMethod
     {
         Direct,
-        Waypoint,
-        DirectDelay,
-        WaypointDelay
+        Waypoint
     }
 
     public enum TeleopInterface
@@ -20,42 +19,47 @@ public class ParticipantHandler : MonoBehaviour
         Screen
     }
 
-    [Header("Condition")]
-    public int participantID;
+    public enum Delay
+    {
+        NoDelay,
+        Delay,
+        LongDelay
+    }
 
-    public Condition condition;
+    public int participantID;
     public TeleopInterface teleopInterface;
 
+    [Header("Condition")]
+    public ControlMethod controlMethod;
+    public Delay delayCondition;
+    public bool tutorial;
 
-    [Header("Read Only Settings")]
+    float delayLevel = 0.5f;
+    float delayLevelLong = 1.0f;
+
+    [Header("Do Not Touch")]
     public float delay = 0;
 
-    [Header("Variables")]
-    [SerializeField]
-    float delayValue = 1;
-
+    void OnValidate()
+    {
+        switch (delayCondition)
+        {
+            case Delay.NoDelay:
+                delay = 0;
+                break;
+            case Delay.Delay:
+                delay = delayLevel;
+                break;
+            case Delay.LongDelay:
+                delay = delayLevelLong;
+                break;
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
-        SetDelay();
+
     }
 
-    private void SetDelay()
-    {
-        switch (condition)
-        {
-            case Condition.DirectDelay:
-                delay = delayValue;
-                break;
-            case Condition.WaypointDelay:
-                delay = delayValue;
-                break;
-            default:
-                delay = 0;
-                break;
-                
-        }
-            
-    }
 }

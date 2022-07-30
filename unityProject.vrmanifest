@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.xrdevicebasedtest.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\g-baker-admin\\Documents\\GitHub\\XR-Device-Based-Test\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\g-baker-admin\\Documents\\GitHub\\MR-Teleop-Study\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "XR-Device-Based-Test [Testing]"

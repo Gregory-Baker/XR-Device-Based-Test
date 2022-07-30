@@ -41,6 +41,8 @@ namespace Valve.VR
         
         private static SteamVR_Action_Boolean p_base_movement_moveBackward;
         
+        private static SteamVR_Action_Boolean p_base_movement_NextTutorial;
+        
         private static SteamVR_Action_Vibration p_base_movement_Haptic;
         
         private static SteamVR_Action_Vector2 p_arm_movement_targetPosition;
@@ -170,6 +172,14 @@ namespace Valve.VR
             get
             {
                 return SteamVR_Actions.p_base_movement_moveBackward.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
+        public static SteamVR_Action_Boolean base_movement_NextTutorial
+        {
+            get
+            {
+                return SteamVR_Actions.p_base_movement_NextTutorial.GetCopy<SteamVR_Action_Boolean>();
             }
         }
         
@@ -332,6 +342,7 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_TurnCamRight,
                     SteamVR_Actions.base_movement_moveForward,
                     SteamVR_Actions.base_movement_moveBackward,
+                    SteamVR_Actions.base_movement_NextTutorial,
                     SteamVR_Actions.base_movement_Haptic,
                     SteamVR_Actions.arm_movement_targetPosition,
                     SteamVR_Actions.arm_movement_pose,
@@ -363,6 +374,7 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_TurnCamRight,
                     SteamVR_Actions.base_movement_moveForward,
                     SteamVR_Actions.base_movement_moveBackward,
+                    SteamVR_Actions.base_movement_NextTutorial,
                     SteamVR_Actions.arm_movement_targetPosition,
                     SteamVR_Actions.arm_movement_pose,
                     SteamVR_Actions.arm_movement_targetConfirm,
@@ -397,6 +409,7 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_TurnCamRight,
                     SteamVR_Actions.base_movement_moveForward,
                     SteamVR_Actions.base_movement_moveBackward,
+                    SteamVR_Actions.base_movement_NextTutorial,
                     SteamVR_Actions.arm_movement_targetConfirm,
                     SteamVR_Actions.arm_movement_changeControlMode,
                     SteamVR_Actions.arm_movement_actuateGripper,
@@ -431,6 +444,7 @@ namespace Valve.VR
                     SteamVR_Actions.base_movement_TurnCamRight,
                     SteamVR_Actions.base_movement_moveForward,
                     SteamVR_Actions.base_movement_moveBackward,
+                    SteamVR_Actions.base_movement_NextTutorial,
                     SteamVR_Actions.arm_movement_targetPosition,
                     SteamVR_Actions.arm_movement_targetConfirm,
                     SteamVR_Actions.arm_movement_changeControlMode,
@@ -462,6 +476,7 @@ namespace Valve.VR
             SteamVR_Actions.p_base_movement_TurnCamRight = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/base_movement/in/TurnCamRight")));
             SteamVR_Actions.p_base_movement_moveForward = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/base_movement/in/moveForward")));
             SteamVR_Actions.p_base_movement_moveBackward = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/base_movement/in/moveBackward")));
+            SteamVR_Actions.p_base_movement_NextTutorial = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/base_movement/in/NextTutorial")));
             SteamVR_Actions.p_base_movement_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/base_movement/out/Haptic")));
             SteamVR_Actions.p_arm_movement_targetPosition = ((SteamVR_Action_Vector2)(SteamVR_Action.Create<SteamVR_Action_Vector2>("/actions/arm_movement/in/targetPosition")));
             SteamVR_Actions.p_arm_movement_pose = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/arm_movement/in/pose")));

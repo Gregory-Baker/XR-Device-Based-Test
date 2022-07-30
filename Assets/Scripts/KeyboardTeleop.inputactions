@@ -13,6 +13,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TurnCam",
+                    "type": "Button",
+                    "id": "471d486c-003f-4ac3-9c82-75c51e62bb14",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TiltCam",
+                    "type": "Button",
+                    "id": "1d513f5b-1efd-48bf-9e1c-0dde6915c63b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -26,6 +44,72 @@
                     "action": "ChangeActionSet",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "1490df64-0a34-4503-913d-ba401596c032",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TurnCam",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "77eab4e3-52e3-4fbe-a993-9fcffc21ebb3",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TurnCam",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "12434cf9-6599-419c-9829-625c11c55278",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TurnCam",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "fbd626b1-6c38-4747-b8b5-b1c38c47fccc",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TiltCam",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "c9d6a3eb-6ad8-4db0-82af-0c7ebe321827",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TiltCam",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "b03aa399-89b1-4205-9872-4722760b4ce8",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TiltCam",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
@@ -61,27 +145,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TurnCam",
-                    "type": "Button",
-                    "id": "8e289044-3978-47a2-b28e-67672772a634",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "StopRobot",
                     "type": "Button",
                     "id": "cfa7caaa-8866-4796-a0a6-2ce3cfcab016",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TiltCam",
-                    "type": "Button",
-                    "id": "5c5fb9e9-b6f6-4de5-a424-c49113ae95ea",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -114,7 +180,7 @@
                 {
                     "name": "negative",
                     "id": "73e3d57f-c9ac-47fa-96eb-e44fd4b7aeed",
-                    "path": "<Keyboard>/s",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -125,7 +191,7 @@
                 {
                     "name": "positive",
                     "id": "d53fd7d9-90bf-4123-b543-11266aeee568",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -147,7 +213,7 @@
                 {
                     "name": "negative",
                     "id": "0f1d7a6a-4ee4-43b2-80ba-fead549ed6e4",
-                    "path": "<Keyboard>/a",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -158,44 +224,11 @@
                 {
                     "name": "positive",
                     "id": "6216cef2-d32a-4aac-96d8-301fadde687f",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TurnRobot",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "1D Axis",
-                    "id": "c2183306-cf6a-4c1c-adaa-994e2cc8bfd5",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TurnCam",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "439651d6-9046-4682-91e2-d27eb556ebfa",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TurnCam",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "1f92140f-91b4-4b07-8922-ae0b89872217",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TurnCam",
+                    "action": "TurnRobot",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -211,37 +244,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "1D Axis",
-                    "id": "91e7ec9d-c3b6-4e52-8e14-69cf7156e996",
-                    "path": "1DAxis",
+                    "name": "",
+                    "id": "78d03d9e-abfc-4cca-977f-9b2b222fdbbc",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TiltCam",
-                    "isComposite": true,
+                    "action": "StopRobot",
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "9a93c641-8cd6-41b3-af8a-e4a3861516ca",
-                    "path": "<Keyboard>/downArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TiltCam",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "e353eab0-f097-47ba-b169-1aa3700570be",
-                    "path": "<Keyboard>/upArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TiltCam",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },
@@ -266,6 +277,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ConfirmTarget",
+                    "type": "Button",
+                    "id": "50534191-e7f3-4f57-94f9-177f1deca2cf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "StopArm",
+                    "type": "Button",
+                    "id": "8f411ff2-8fd5-4c70-9e26-a0de6d8be03f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ArmToHome",
+                    "type": "Button",
+                    "id": "e4dce578-b1bf-4ba5-b416-d6cc9c67b29d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -283,7 +321,7 @@
                 {
                     "name": "up",
                     "id": "6ae40d00-8410-4a3d-b33b-634d1eb7192a",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -294,7 +332,7 @@
                 {
                     "name": "down",
                     "id": "664a10a0-ad4a-471e-83b1-f4521525bba0",
-                    "path": "<Keyboard>/s",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -305,7 +343,7 @@
                 {
                     "name": "left",
                     "id": "d22044d6-a013-435d-a7b7-122a432c73d8",
-                    "path": "<Keyboard>/a",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -316,7 +354,7 @@
                 {
                     "name": "right",
                     "id": "1ce8317c-43f2-4557-946a-1435d03cf4d4",
-                    "path": "<Keyboard>/d",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -325,8 +363,19 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "",
+                    "id": "08f34fe2-8606-4ebb-a5fa-10b750fe057f",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ConfirmTarget",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "1D Axis",
-                    "id": "18ac96af-2450-4cbd-9e5b-91365960e10f",
+                    "id": "2655a622-170a-4fe9-aeda-8c4514e8b9a1",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
@@ -337,7 +386,7 @@
                 },
                 {
                     "name": "negative",
-                    "id": "b4be864a-65f9-4d44-9c00-dbd43d065c99",
+                    "id": "8741b11b-267b-435e-92b8-247de66cd31f",
                     "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
@@ -348,7 +397,7 @@
                 },
                 {
                     "name": "positive",
-                    "id": "48e54738-4884-4aa6-a9b8-d140b746e137",
+                    "id": "f065efa5-d4da-4256-b6e2-887f8234dffa",
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
@@ -356,6 +405,39 @@
                     "action": "UpDown",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "f4f7389c-1f1f-400b-88a2-675804c3edb1",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopArm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b3f80641-52a1-402e-91bd-9ea58fb25257",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopArm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a2abf41-ff64-48e9-a27c-6691438595a0",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ArmToHome",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

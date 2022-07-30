@@ -8,6 +8,7 @@ using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 using RosMessageTypes.KinovaCustom;
+using RosMessageTypes.Actionlib;
 using RosMessageTypes.Moveit;
 using RosMessageTypes.Control;
 using UnityEngine.UIElements;
@@ -16,10 +17,13 @@ public class ArmTarget : MonoBehaviour
 {
     ROSConnection ros;
 
+    [SerializeField]
+    ParticipantHandler participantHandler;
+
     public enum ArmState
     {
         Default,
-        PostAction,
+        ExecutingAction,
         HomePosition
     }
 
@@ -46,7 +50,13 @@ public class ArmTarget : MonoBehaviour
     string pickResultTopic = "/kinova_moveit_pick_result";
 
     [SerializeField]
+    string cancelPickTopic;
+
+    [SerializeField]
     string placeTopic = "/kinova_place_object_server/goal";
+
+    [SerializeField]
+    string cancelPlaceTopic;
 
     [SerializeField]
     string placeResultTopic = "/kinova_place_object_server/result";
@@ -77,17 +87,14 @@ public class ArmTarget : MonoBehaviour
 
     public Vector3<FLU> staticPositionOffset = Vector3<FLU>.zero;
 
-    [HideInInspector]
-    public bool gripperClosed = false;
-
     [Header("Read Only")]
     [SerializeField]
     float delay = 0;
+    public bool gripperClosed = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        delay = FindObjectOfType<ParticipantHandler>().delay;
 
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<PoseMsg>(poseTopic);
@@ -95,15 +102,21 @@ public class ArmTarget : MonoBehaviour
         ros.RegisterPublisher<JointStateMsg>(jointTopic);
         ros.RegisterPublisher<EmptyMsg>(stopTopic);
         ros.RegisterPublisher<PlaceObjectActionGoal>(placeTopic);
-        ros.RegisterPublisher<Float32Msg>(pickTopic);
+        ros.RegisterPublisher<PlaceObjectActionGoal>(pickTopic);
+        ros.RegisterPublisher<GoalIDMsg>(cancelPlaceTopic);
+        ros.RegisterPublisher<GoalIDMsg>(cancelPickTopic);
         ros.RegisterPublisher<GripperCommandActionGoal>(gripGoalTopic);
 
-        ros.Subscribe<BoolMsg>(pickResultTopic, PickResultCallback);
+        ros.Subscribe<PlaceObjectActionResult>(pickResultTopic, PickResultCallback);
         ros.Subscribe<PlaceObjectActionResult>(placeResultTopic, PlaceResultCallback);
 
         StartCoroutine(SetBaseLinkObject());
         StartCoroutine(SetTargetFrameObject());
 
+        if (armState == ArmState.HomePosition)
+            ArmToHomePosition();
+
+        OpenGripper();
     }
 
     private IEnumerator SetTargetFrameObject()
@@ -122,14 +135,17 @@ public class ArmTarget : MonoBehaviour
             baseLinkObject = GameObject.Find("base_link");
             yield return null;
         }
-        
-        if (armState == ArmState.HomePosition)
-            ArmToHomePosition();
     }
 
     public void StopArm()
     {
         PublishWithDelay(stopTopic, new EmptyMsg());
+        if (armState == ArmState.ExecutingAction)
+        {
+            GoalIDMsg goalIDMsg = new GoalIDMsg();
+            PublishWithDelay(cancelPickTopic, goalIDMsg);
+            PublishWithDelay(cancelPlaceTopic, goalIDMsg);
+        }
         StartCoroutine(MoveTargetToRobotCoroutine());
     }
 
@@ -218,7 +234,7 @@ public class ArmTarget : MonoBehaviour
 
     public void ArmToHomePosition()
     {
-        transform.localPosition = new Vector3(-0.130f, 0.518f, 0.409f);
+        transform.localPosition = new Vector3(-0.190f, 0.518f, 0.409f);
 
         var jointPositions = new double[7];
         jointPositions[0] = 1.516;
@@ -241,10 +257,21 @@ public class ArmTarget : MonoBehaviour
     }
 
 
+    //public void PickObject()
+    //{
+    //    var pick_msg = new Float32Msg(pickHeight);
+    //    PublishWithDelay(pickTopic, pick_msg);
+    //}
+
     public void PickObject()
     {
-        var pick_msg = new Float32Msg(pickHeight);
-        PublishWithDelay(pickTopic, pick_msg);
+        if (armState == ArmState.Default)
+        {
+            armState = ArmState.ExecutingAction;
+            var pick_msg = new PlaceObjectActionGoal();
+            PublishWithDelay(pickTopic, pick_msg);
+            gripperClosed = true;
+        }
     }
 
     private void PickResultCallback(BoolMsg msg)
@@ -252,16 +279,27 @@ public class ArmTarget : MonoBehaviour
         changeArmTargetControl.SetControlMode(ChangeArmTargetControl.ControlMode.ConfirmActionSuccess);
     }
 
+    private void PickResultCallback(PlaceObjectActionResult msg)
+    {
+        armState = ArmState.Default;
+        changeArmTargetControl.SetControlMode(ChangeArmTargetControl.ControlMode.ConfirmActionSuccess);
+    }
+
 
     public void PlaceObject()
     {
-        var place_msg = new PlaceObjectActionGoal();
-
-        PublishWithDelay(placeTopic, place_msg);
+        if (armState == ArmState.Default)
+        {
+            armState = ArmState.ExecutingAction;
+            var place_msg = new PlaceObjectActionGoal();
+            PublishWithDelay(placeTopic, place_msg);
+            gripperClosed = false;
+        }
     }
 
     private void PlaceResultCallback(PlaceObjectActionResult msg)
     {
+        armState = ArmState.Default;
         if (msg.status.status == 3)
         {
             changeArmTargetControl.SetControlMode(ChangeArmTargetControl.ControlMode.ConfirmActionSuccess);
@@ -283,5 +321,10 @@ public class ArmTarget : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         ros.Publish(topic, message);
+    }
+
+    private void Update()
+    {
+        delay = participantHandler.delay;
     }
 }

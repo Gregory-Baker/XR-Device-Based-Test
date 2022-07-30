@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Valve.VR;
 
 public class ArmControllerSteer : MonoBehaviour
@@ -16,6 +18,7 @@ public class ArmControllerSteer : MonoBehaviour
     [Header("External Objects")]
     public GameObject targetObject;
     public GameObject arrows;
+    public TMP_Dropdown dropdown;
 
     [Header("SteamVR Inputs")]
     public SteamVR_Input_Sources inputSource = SteamVR_Input_Sources.Any;
@@ -40,6 +43,7 @@ public class ArmControllerSteer : MonoBehaviour
     public float targetForwardMin = 0.0f;
     public float targetLRMax = 0.4f;
     public float targetHeightMax = 0.8f;
+    public float targetHeightMin = 0.0f;
 
 
     public UnityEvent onStopEvents;
@@ -47,6 +51,12 @@ public class ArmControllerSteer : MonoBehaviour
     public UnityEvent onActuateGripperEvents;
     public UnityEvent yesResponseEvents;
     public UnityEvent noResponseEvents;
+    public UnityEvent pickEvents;
+    public UnityEvent placeEvents;
+    public UnityEvent armToHomeEvents;
+    public UnityEvent actuateGripperEvents;
+    public UnityEvent openGripperEvents;
+    public UnityEvent closeGripperEvents;
 
 
     private void Awake()
@@ -54,6 +64,10 @@ public class ArmControllerSteer : MonoBehaviour
         inputActions = new KeyboardTeleop();
 
         inputActions.Arm.FBLR.started += MoveTargetInPlaneKeyboard;
+        inputActions.Arm.UpDown.started += MoveTargetUpDownRotate;
+        inputActions.Arm.ConfirmTarget.started += ConfirmTarget;
+        inputActions.Arm.StopArm.started += StopArm;
+        inputActions.Arm.ArmToHome.started += ArmToHome;
 
         changeControlMode[inputSource].onStateDown += ChangeControlMode;
         confirmTarget[inputSource].onStateDown += ConfirmTarget;
@@ -79,17 +93,30 @@ public class ArmControllerSteer : MonoBehaviour
 
     private void TriggerYesResponseEvents(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
+        SuccessfulActionResponse();
+    }
+
+    public void SuccessfulActionResponse()
+    {
         if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.ConfirmActionSuccess)
             yesResponseEvents.Invoke();
+        dropdown.value = 0;
     }
 
     private void TriggerNoResponseEvents(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.ConfirmActionSuccess)
-            noResponseEvents.Invoke();
+        FailedActionResponse();
     }
 
-    public void SetControlModeToPosition() {
+    public void FailedActionResponse()
+    {
+        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.ConfirmActionSuccess)
+            noResponseEvents.Invoke();
+        dropdown.value = 0;
+    }
+
+    public void SetControlModeToPosition()
+    {
         changeArmTargetControl.SetControlMode(ChangeArmTargetControl.ControlMode.TargetPositionControl);
     }
 
@@ -98,14 +125,67 @@ public class ArmControllerSteer : MonoBehaviour
         onStopEvents.Invoke();
     }
 
+    private void StopArm(InputAction.CallbackContext obj)
+    {
+        onStopEvents.Invoke();
+    }
+
+    private void ArmToHome(InputAction.CallbackContext obj)
+    {
+        ArmToHome();
+    }
+
+    private void ArmToHome()
+    {
+        armToHomeEvents.Invoke();
+    }
+
     private void ActuateGripper(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         onActuateGripperEvents.Invoke();
     }
 
+    public IEnumerator ResetDropdownCoroutine (float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        dropdown.value = 0;
+    }
+
     private void ConfirmTarget(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
         onConfirmTargetEvents.Invoke();
+    }
+
+    private void ConfirmTarget(InputAction.CallbackContext obj)
+    {
+        onConfirmTargetEvents.Invoke();
+    }
+
+    public void PerformAction(int action)
+    {
+        switch (action)
+        {
+            case 0:
+                break;
+            case 1:
+                pickEvents.Invoke();
+                break;
+            case 2:
+                placeEvents.Invoke();
+                break;
+            case 3:
+                ArmToHome();
+                StartCoroutine(ResetDropdownCoroutine(4.0f));
+                break;
+            case 4:
+                openGripperEvents.Invoke();
+                StartCoroutine(ResetDropdownCoroutine(1.5f));
+                break;
+            case 5:
+                closeGripperEvents.Invoke();
+                StartCoroutine(ResetDropdownCoroutine(1.5f));
+                break;
+        }
     }
 
     private void ChangeControlMode(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
@@ -122,7 +202,7 @@ public class ArmControllerSteer : MonoBehaviour
             {
                 case ChangeArmTargetControl.ControlMode.SpecialFunctions:
                     turnTarget(axis);
-                    moveTargetUpDown(axis);
+                    moveTargetUpDown(axis.y);
                     break;
                 case ChangeArmTargetControl.ControlMode.TargetPositionControl:
                     moveTargetFBLR(axis);
@@ -134,13 +214,24 @@ public class ArmControllerSteer : MonoBehaviour
     private void MoveTargetInPlane(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
         // if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
-            moveTargetFBLR(axis);
+        moveTargetFBLR(axis);
     }
 
     private void MoveTargetInPlaneKeyboard(InputAction.CallbackContext obj)
     {
+
+        StartCoroutine(MoveTargetInPlaneKeyboardCoroutine(obj));
+    }
+
+    private IEnumerator MoveTargetInPlaneKeyboardCoroutine(InputAction.CallbackContext obj)
+    {
         var axis = obj.ReadValue<Vector2>();
-        moveTargetFBLR(axis);
+        while (axis.magnitude > 0.1)
+        {
+            axis = obj.ReadValue<Vector2>();
+            moveTargetFBLR(axis);
+            yield return null;
+        }
     }
 
 
@@ -179,15 +270,46 @@ public class ArmControllerSteer : MonoBehaviour
             {
                 turnTarget(axis);
             }
-            
-            moveTargetUpDown(axis);
+
+            moveTargetUpDown(axis.y);
         }
     }
 
-    private void moveTargetUpDown(Vector2 axis)
+    private void MoveTargetUpDownRotate(InputAction.CallbackContext obj)
     {
-        if (Mathf.Abs(axis.y) > axisThreshold) {
-            Vector3 translation = new Vector3(0, axis.y * moveSpeed * Time.deltaTime, 0);
+        if (changeArmTargetControl.controlMode == ChangeArmTargetControl.ControlMode.TargetPositionControl)
+        {
+
+            StartCoroutine(MoveTargetUpDownRotateCoroutine(obj));
+        }
+    }
+
+    private IEnumerator MoveTargetUpDownRotateCoroutine(InputAction.CallbackContext obj)
+    {
+        var axis = obj.ReadValue<float>();
+        while (Mathf.Abs(axis) > 0.1)
+        {
+            axis = obj.ReadValue<float>();
+            moveTargetUpDown(axis);
+            yield return null;
+        }
+    }
+
+    private void moveTargetUpDown(float axis)
+    {
+        if (Mathf.Abs(axis) > axisThreshold)
+        {
+            Vector3 translation = Vector3.zero;
+            if (axis > 0)
+            {
+                if (targetObject.transform.localPosition.y < targetHeightMax)
+                    translation.y = axis * moveSpeed * Time.deltaTime;
+            }
+            else if (axis < 0)
+            {
+                if (targetObject.transform.localPosition.y > targetHeightMin)
+                    translation.y = axis * moveSpeed * Time.deltaTime;
+            }
             targetObject.transform.Translate(translation, Space.World);
         }
     }

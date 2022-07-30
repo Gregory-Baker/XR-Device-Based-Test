@@ -11,6 +11,8 @@ using UnityEngine.UIElements;
 public class RosHeadRotationPublisher : MonoBehaviour
 {
     ROSConnection ros;
+    public bool trackHead = true;
+
     public string topicName = "head_rot";
     public float publishMessageFrequency = 0f;
     private float timeElapsed;
@@ -38,12 +40,18 @@ public class RosHeadRotationPublisher : MonoBehaviour
         timeElapsed += Time.deltaTime;
         if (ros.isActiveAndEnabled && timeElapsed > publishMessageFrequency)
         {
-            InputTracking.GetNodeStates(nodeStates);
-            var headState = nodeStates.FirstOrDefault(node => node.nodeType == XRNode.Head);
-            headState.TryGetRotation(out headRotation);
-            Vector3 angles = headRotation.eulerAngles;
+            Vector3 angles = Vector3.zero;
+            if (trackHead)
+            {
+                InputTracking.GetNodeStates(nodeStates);
+                var headState = nodeStates.FirstOrDefault(node => node.nodeType == XRNode.Head);
+                headState.TryGetRotation(out headRotation);
+                angles = headRotation.eulerAngles;
+            }
+
             float panAngle = angles.y + panOffset;
             float tiltAngle = angles.x + tiltOffset;
+
             if (panAngle > 180)
             {
                 panAngle -= 360;
@@ -64,13 +72,17 @@ public class RosHeadRotationPublisher : MonoBehaviour
         }
     }
 
-    public void CentreCamera()
+    public void CentreCameraPan()
     {
         panOffset = 0;
-        // tiltOffset = 0;
     }
 
-    public IEnumerator CentreCameraCoroutine(float speed)
+    public void CentreCameraTilt()
+    {
+        tiltOffset = 0;
+    }
+
+    public IEnumerator CentreCameraPanCoroutine(float speed)
     {
         while (Mathf.Abs(panOffset) > 1)
         {

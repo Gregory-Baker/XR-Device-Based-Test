@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using System;
 using UnityEditor.PackageManager;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class BaseController : MonoBehaviour
 {
@@ -59,10 +60,13 @@ public class BaseController : MonoBehaviour
     public delegate void MoveTargetoRobotDelegate();
     public static event MoveTargetoRobotDelegate OnMoveTargetToRobot;
 
-
     public SteamVR_Action_Boolean stopAction = null;
     public delegate void StopAction();
     public static event StopAction OnStop;
+
+    public SteamVR_Action_Boolean nextTutorialAction = null;
+    public UnityEvent nextTutorialEvents = null;
+
 
     [Header("Configurable Parameters")]
     public float targetTurnMultiplier = 120f;
@@ -82,6 +86,7 @@ public class BaseController : MonoBehaviour
     private void Awake()
     {
         inputActions = new KeyboardTeleop();
+        inputActions.Common.Enable();
 
         inputActions.Keyboard.GoToGoal.started += confirmTargetKeyboard;
         inputActions.Keyboard.MoveRobotForward.started += strafeTargetKeyboard;
@@ -89,8 +94,8 @@ public class BaseController : MonoBehaviour
         inputActions.Keyboard.TurnRobot.started += turnRobotKeyboard;
         inputActions.Keyboard.TurnRobot.canceled += turnRobotKeyboardUp;
         inputActions.Keyboard.StopRobot.started += stopRobot;
-        inputActions.Keyboard.TurnCam.started += turnCamKeyboard;
-        inputActions.Keyboard.TiltCam.started += tiltCamKeyboard;
+        inputActions.Common.TurnCam.started += turnCamKeyboard;
+        inputActions.Common.TiltCam.started += tiltCamKeyboard;
 
         targetSelectAction[inputSource].onStateDown += enableTargetSelection;
         targetSelectAction[inputSource].onStateUp += disableTargetSelection;
@@ -115,11 +120,12 @@ public class BaseController : MonoBehaviour
         moveBackwardAction[inputSource].onState += MoveTargetBackward;
         moveBackwardAction[inputSource].onStateUp += MoveRobotToTarget;
 
+        nextTutorialAction[inputSource].onStateDown += StartNextTutorial;
+
         stopAction[inputSource].onStateDown += stopRobot;
 
 
     }
-
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -283,6 +289,7 @@ public class BaseController : MonoBehaviour
 
     private void turnTarget(SteamVR_Action_Vector2 fromAction, SteamVR_Input_Sources fromSource, Vector2 axis, Vector2 delta)
     {
+        if (!moveForwardAction[inputSource].state && !moveBackwardAction[inputSource].state && !turnCamLeftAction[inputSource].state && !turnCamRightAction[inputSource].state)
         if (axis.magnitude > 0)
         {
             float direction = -Mathf.Atan2(targetRotation[inputSource].axis.y, targetRotation[inputSource].axis.x);
@@ -405,8 +412,15 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    private void StartNextTutorial(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        nextTutorialEvents.Invoke();
+    }
+
+
     private void OnGUI()
     {
+        if(!inputActions.Keyboard.MoveRobotForward.IsPressed() && !inputActions.Keyboard.TurnRobot.IsPressed())
         if (Mathf.Abs(Input.mouseScrollDelta.y) > 0)
         {
             float rotation = Input.mouseScrollDelta.y * scrollTurnWheelScale;
