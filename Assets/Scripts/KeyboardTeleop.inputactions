@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CentreCamera",
+                    "type": "Button",
+                    "id": "1abd1f2c-7a5d-42ae-b6b1-a9bd0901d9bf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -110,6 +119,17 @@
                     "action": "TiltCam",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "9624c764-3a96-4063-aed8-b0315b3d34b9",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CentreCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -148,6 +168,24 @@
                     "name": "StopRobot",
                     "type": "Button",
                     "id": "cfa7caaa-8866-4796-a0a6-2ce3cfcab016",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BaseToHome",
+                    "type": "Button",
+                    "id": "ec756706-69ac-4f22-8d9b-cd540064c276",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SetHomePosition",
+                    "type": "Button",
+                    "id": "01b06c4c-dc59-4b8b-976f-18849b40e88c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -251,6 +289,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "StopRobot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "999045a5-9632-4202-a68d-58227dd6313a",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BaseToHome",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bc24214f-d71a-48e8-b9fa-fb0d3d3b77f4",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SetHomePosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

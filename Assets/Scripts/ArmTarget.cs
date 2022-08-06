@@ -12,6 +12,7 @@ using RosMessageTypes.Actionlib;
 using RosMessageTypes.Moveit;
 using RosMessageTypes.Control;
 using UnityEngine.UIElements;
+using RosMessageTypes.KortexDriver;
 
 public class ArmTarget : MonoBehaviour
 {
@@ -53,6 +54,24 @@ public class ArmTarget : MonoBehaviour
     string cancelPickTopic;
 
     [SerializeField]
+    string pickFullTopic = "/kinova_pick_action_full/goal";
+
+    [SerializeField]
+    string pickFullResultTopic = "/kinova_pick_action_full/result";
+
+    [SerializeField]
+    string placeFullResultTopic = "/kinova_place_action_full/result";
+
+    [SerializeField]
+    string cancelPickFullTopic = "/kinova_pick_action_full/cancel";
+
+    [SerializeField]
+    string placeFullTopic = "/kinova_place_action_full/goal";
+
+    [SerializeField]
+    string cancelPlaceFullTopic = "/kinova_place_action_full/cancel";
+
+    [SerializeField]
     string placeTopic = "/kinova_place_object_server/goal";
 
     [SerializeField]
@@ -69,6 +88,9 @@ public class ArmTarget : MonoBehaviour
 
     [SerializeField]
     string gripResultTopic = "/kinova_arm/kinova_arm_robotiq_2f_85_gripper_controller/gripper_cmd/result";
+
+    [SerializeField]
+    string gripStatusService = "/kinova_arm/base/get_measured_gripper_movement";
 
     [SerializeField]
     string[] jointNames = new string[7];
@@ -103,20 +125,58 @@ public class ArmTarget : MonoBehaviour
         ros.RegisterPublisher<EmptyMsg>(stopTopic);
         ros.RegisterPublisher<PlaceObjectActionGoal>(placeTopic);
         ros.RegisterPublisher<PlaceObjectActionGoal>(pickTopic);
+        ros.RegisterPublisher<PickObjectFullActionGoal>(pickFullTopic);
+        ros.RegisterPublisher<PickObjectFullActionGoal>(placeFullTopic);
         ros.RegisterPublisher<GoalIDMsg>(cancelPlaceTopic);
         ros.RegisterPublisher<GoalIDMsg>(cancelPickTopic);
+        ros.RegisterPublisher<GoalIDMsg>(cancelPickFullTopic);
+        ros.RegisterPublisher<GoalIDMsg>(cancelPlaceFullTopic);
         ros.RegisterPublisher<GripperCommandActionGoal>(gripGoalTopic);
+        ros.RegisterRosService<GetMeasuredGripperMovementRequest, GetMeasuredGripperMovementResponse>(gripStatusService);
 
-        ros.Subscribe<PlaceObjectActionResult>(pickResultTopic, PickResultCallback);
-        ros.Subscribe<PlaceObjectActionResult>(placeResultTopic, PlaceResultCallback);
+        //ros.Subscribe<PlaceObjectActionResult>(pickResultTopic, PickResultCallback);
+        //ros.Subscribe<PlaceObjectActionResult>(placeResultTopic, PlaceResultCallback);
+
+        ros.Subscribe<PickObjectFullActionResult>(pickFullResultTopic, PickFullResultCallback);
+        ros.Subscribe<PickObjectFullActionResult>(placeFullResultTopic, PickFullResultCallback);
 
         StartCoroutine(SetBaseLinkObject());
         StartCoroutine(SetTargetFrameObject());
+        StartCoroutine(PollGripperState());
 
         if (armState == ArmState.HomePosition)
             ArmToHomePosition();
 
         OpenGripper();
+    }
+
+    private IEnumerator PollGripperState()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(0.5f);
+            var grip_status_req = new GetMeasuredGripperMovementRequest();
+            grip_status_req.input.mode = 3;
+            ros.SendServiceMessage<GetMeasuredGripperMovementResponse>(gripStatusService, grip_status_req, UpdateGripperState);
+        }
+    }
+
+    private void UpdateGripperState(GetMeasuredGripperMovementResponse response)
+    {
+        if (response.output.finger[0].value > 0.5)
+        {
+            if (!gripperClosed)
+            {
+                gripperClosed = true;
+            }
+        }
+        else
+        {
+            if(gripperClosed)
+            {
+                gripperClosed = false;
+            }
+        }
     }
 
     private IEnumerator SetTargetFrameObject()
@@ -144,9 +204,20 @@ public class ArmTarget : MonoBehaviour
         {
             GoalIDMsg goalIDMsg = new GoalIDMsg();
             PublishWithDelay(cancelPickTopic, goalIDMsg);
+            PublishWithDelay(cancelPickFullTopic, goalIDMsg);
             PublishWithDelay(cancelPlaceTopic, goalIDMsg);
+            PublishWithDelay(cancelPlaceFullTopic, goalIDMsg);
+            StartCoroutine(StopPickAndPlace());
         }
         StartCoroutine(MoveTargetToRobotCoroutine());
+    }
+
+    private IEnumerator StopPickAndPlace()
+    {
+        yield return new WaitForSeconds(0.1f);
+        GoalIDMsg goalIDMsg = new GoalIDMsg();
+        PublishWithDelay(cancelPlaceTopic, goalIDMsg);
+        PublishWithDelay(cancelPickTopic, goalIDMsg);
     }
 
 
@@ -265,14 +336,47 @@ public class ArmTarget : MonoBehaviour
 
     public void PickObject()
     {
+        //if (armState == ArmState.HomePosition || armState == ArmState.Default)
+        //{
+        //    armState = ArmState.ExecutingAction;
+        //    var pick_msg = new PickObjectFullActionGoal();
+        //    pick_msg.goal.pre_pick_pose = GetTargetPoseMsg();
+        //    PublishWithDelay(pickFullTopic, pick_msg);
+        //    gripperClosed = true;
+        //}
+
         if (armState == ArmState.Default)
         {
             armState = ArmState.ExecutingAction;
             var pick_msg = new PlaceObjectActionGoal();
             PublishWithDelay(pickTopic, pick_msg);
-            gripperClosed = true;
+            gripperClosed = false;
         }
     }
+
+    public void ConfirmTarget()
+    {
+        // PublishCartesianGoal();
+
+        if (armState == ArmState.HomePosition || armState == ArmState.Default)
+        {
+            armState = ArmState.ExecutingAction;
+            var pick_msg = new PickObjectFullActionGoal();
+            pick_msg.goal.pre_pick_pose = GetTargetPoseMsg();
+            if (gripperClosed == false)
+            {
+                PublishWithDelay(pickFullTopic, pick_msg);
+                gripperClosed = true;
+            }
+            else
+            {
+                PublishWithDelay(placeFullTopic, pick_msg);
+                gripperClosed = false;
+            }
+        }
+    }
+
+
 
     private void PickResultCallback(BoolMsg msg)
     {
@@ -294,6 +398,16 @@ public class ArmTarget : MonoBehaviour
             var place_msg = new PlaceObjectActionGoal();
             PublishWithDelay(placeTopic, place_msg);
             gripperClosed = false;
+        }
+    }
+
+    private void PickFullResultCallback(PickObjectFullActionResult msg)
+    {
+        Debug.Log("Here");
+        armState = ArmState.Default;
+        if (msg.status.status == 3)
+        {
+            changeArmTargetControl.SetControlMode(ChangeArmTargetControl.ControlMode.ConfirmActionSuccess);
         }
     }
 

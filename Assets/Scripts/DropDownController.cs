@@ -33,11 +33,11 @@ public class DropDownController : MonoBehaviour, IPointerClickHandler
             EnableOption(2, true);
             EnableOption(3, false);
         }
-        if (armTarget.armState == ArmTarget.ArmState.HomePosition)
-        {
-            EnableOption(2, false);
-            EnableOption(3, false);
-        }
+        //if (armTarget.armState == ArmTarget.ArmState.HomePosition)
+        //{
+        //    EnableOption(2, false);
+        //    EnableOption(3, false);
+        //}
     }
 
     public void OnPointerClick(PointerEventData eventData)

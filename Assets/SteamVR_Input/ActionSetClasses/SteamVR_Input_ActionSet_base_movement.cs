@@ -113,11 +113,19 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean NextTutorial
+        public virtual SteamVR_Action_Boolean BaseToHome
         {
             get
             {
-                return SteamVR_Actions.base_movement_NextTutorial;
+                return SteamVR_Actions.base_movement_BaseToHome;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean SetHomePosition
+        {
+            get
+            {
+                return SteamVR_Actions.base_movement_SetHomePosition;
             }
         }
         

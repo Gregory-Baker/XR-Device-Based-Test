@@ -26,7 +26,7 @@ public class AutoScreenRecorder : MonoBehaviour
         control = participantHandler.controlMethod.ToString();
         delay = participantHandler.delayCondition.ToString();
 
-        if (!participantHandler.tutorial)
+        if (participantHandler.participantID != 0 && !participantHandler.tutorial)
         {
             controllerSettings = ScriptableObject.CreateInstance<RecorderControllerSettings>();
             TestRecorderController = new RecorderController(controllerSettings);

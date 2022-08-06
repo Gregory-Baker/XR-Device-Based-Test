@@ -64,9 +64,13 @@ public class BaseController : MonoBehaviour
     public delegate void StopAction();
     public static event StopAction OnStop;
 
-    public SteamVR_Action_Boolean nextTutorialAction = null;
-    public UnityEvent nextTutorialEvents = null;
+    public SteamVR_Action_Boolean baseToHomeAction = null;
+    public UnityEvent baseToHomeEvents = null;
 
+    public SteamVR_Action_Boolean setHomePositionAction = null;
+    public UnityEvent setHomePositionEvents = null;
+
+    public UnityEvent centreCameraEvents = null;
 
     [Header("Configurable Parameters")]
     public float targetTurnMultiplier = 120f;
@@ -96,6 +100,9 @@ public class BaseController : MonoBehaviour
         inputActions.Keyboard.StopRobot.started += stopRobot;
         inputActions.Common.TurnCam.started += turnCamKeyboard;
         inputActions.Common.TiltCam.started += tiltCamKeyboard;
+        inputActions.Keyboard.BaseToHome.started += BaseToHome;
+        inputActions.Keyboard.SetHomePosition.started += SetHomePosition;
+        inputActions.Common.CentreCamera.started += CentreCamera;
 
         targetSelectAction[inputSource].onStateDown += enableTargetSelection;
         targetSelectAction[inputSource].onStateUp += disableTargetSelection;
@@ -120,12 +127,15 @@ public class BaseController : MonoBehaviour
         moveBackwardAction[inputSource].onState += MoveTargetBackward;
         moveBackwardAction[inputSource].onStateUp += MoveRobotToTarget;
 
-        nextTutorialAction[inputSource].onStateDown += StartNextTutorial;
+        baseToHomeAction[inputSource].onStateDown += BaseToHome;
+        setHomePositionAction[inputSource].onStateDown += SetHomePosition;
 
         stopAction[inputSource].onStateDown += stopRobot;
 
 
     }
+
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -190,10 +200,10 @@ public class BaseController : MonoBehaviour
 
     private void turnRobotKeyboard(InputAction.CallbackContext obj)
     {
-        if (OnMoveTargetToRobot != null)
-        {
-            OnMoveTargetToRobot();
-        }
+        //if (OnMoveTargetToRobot != null)
+        //{
+        //    OnMoveTargetToRobot();
+        //}
         StartCoroutine(turnCamKeyboardCoroutine(obj, true));
     }
 
@@ -255,6 +265,11 @@ public class BaseController : MonoBehaviour
             yield return null;
         }
 
+    }
+
+    private void CentreCamera(InputAction.CallbackContext obj)
+    {
+        centreCameraEvents.Invoke();
     }
 
     private void turnRobotKeyboardUp(InputAction.CallbackContext obj)
@@ -412,9 +427,37 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    private void StartNextTutorial(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    private void BaseToHome(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        nextTutorialEvents.Invoke();
+        BaseToHome();
+    }
+
+    private void BaseToHome(InputAction.CallbackContext obj)
+    {
+        BaseToHome();
+    }
+
+    private void SetHomePosition(InputAction.CallbackContext obj)
+    {
+        SetHomePosition();
+    }
+
+    private void SetHomePosition(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        SetHomePosition();
+    }
+
+
+    private void SetHomePosition()
+    {
+        setHomePositionEvents.Invoke();
+    }
+
+
+
+    private void BaseToHome()
+    {
+        baseToHomeEvents.Invoke();
     }
 
 

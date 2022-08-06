@@ -52,6 +52,9 @@ public class MoveToTarget : MonoBehaviour
     float cameraTurnSpeed = 20f;
 
     [SerializeField]
+    float cameraOnlyTurnSpeed = 40f;
+
+    [SerializeField]
     float robotTurnSpeed = 20f;
 
     [SerializeField]
@@ -62,15 +65,21 @@ public class MoveToTarget : MonoBehaviour
 
     public bool fixCameraOrientation = false;
 
+    public bool cameraFlash = false;
+
+    public FlashImage[] flashOverlays;
+
     [Header("Read Only")]
     [SerializeField]
     float delay = 0;
 
     ROSConnection ros;
     public GameObject robotBaseLink;
+    public GameObject homeCylinder;
 
     float previousRobotHeading = 0f;
     bool turnActionComplete = false;
+    PoseStampedMsg startPosition = new PoseStampedMsg();
 
     public enum ActionStatus
     {
@@ -172,13 +181,16 @@ public class MoveToTarget : MonoBehaviour
 
     private void TurnCamLeft(bool turnTarget)
     {
-        if (panTiltPublisher.panOffset > -179)
+        if (panTiltPublisher.panOffset > -178)
         {
-            panTiltPublisher.panOffset -= cameraTurnSpeed * Time.deltaTime;
-
             if (turnTarget)
             {
+                panTiltPublisher.panOffset -= cameraTurnSpeed * Time.deltaTime;
                 targetObject.transform.Rotate(Vector3.up, -cameraTurnSpeed * Time.deltaTime);
+            }
+            else
+            {
+                panTiltPublisher.panOffset -= cameraOnlyTurnSpeed * Time.deltaTime;
             }
                 
         }
@@ -186,15 +198,18 @@ public class MoveToTarget : MonoBehaviour
 
     private void TurnCamRight(bool turnTarget)
     {
-        if (panTiltPublisher.panOffset < 179)
+        if (panTiltPublisher.panOffset < 178)
         {
-            panTiltPublisher.panOffset += cameraTurnSpeed * Time.deltaTime;
-
             if (turnTarget)
             {
+                panTiltPublisher.panOffset += cameraTurnSpeed * Time.deltaTime;
                 targetObject.transform.Rotate(Vector3.up, cameraTurnSpeed * Time.deltaTime);
             }
-            
+            else
+            {
+                panTiltPublisher.panOffset += cameraOnlyTurnSpeed * Time.deltaTime;
+            }
+
         }
     }
 
@@ -263,9 +278,24 @@ public class MoveToTarget : MonoBehaviour
         MoveConfirmToRobot();
     }
 
+    private void TurnRobotAction(float angle)
+    {
+        TurnAngleActionGoal turnActionGoal = new TurnAngleActionGoal();
+        turnActionGoal.goal.turn_angle = angle * Mathf.Deg2Rad;
+        PublishWithDelay(turnRobotActionTopic, turnActionGoal);
+    }
+
     private void CentreCameraPan()
     {
-        StartCoroutine(panTiltPublisher.CentreCameraPanCoroutine(cameraTurnSpeed));
+        if (cameraFlash)
+        {
+            CentreCameraPanInstant();
+        }
+        else
+        {
+            StartCoroutine(panTiltPublisher.CentreCameraPanCoroutine(cameraTurnSpeed));
+        }
+        
 
         //if (fixCameraOrientation)
         //{
@@ -280,6 +310,13 @@ public class MoveToTarget : MonoBehaviour
     public void CentreCameraPanInstant()
     {
         panTiltPublisher.CentreCameraPan();
+        if (cameraFlash && flashOverlays != null)
+        {
+            foreach (var overlay in flashOverlays)
+            {
+                overlay.Flash();
+            }
+        }
     }
 
     private void turnRobotActionResultCallback(TurnAngleActionResult msg)
@@ -300,7 +337,20 @@ public class MoveToTarget : MonoBehaviour
             transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
 
             previousRobotHeading = robotBaseLink.transform.eulerAngles.y;
+
+            startPosition.header.frame_id = "map";
+            startPosition.pose.position = robotBaseLink.transform.position.To<FLU>();
+            startPosition.pose.orientation = robotBaseLink.transform.rotation.To<FLU>();
         }
+    }
+
+    public void SetHomePositionToTarget()
+    {
+        startPosition.pose.position = targetObject.transform.position.To<FLU>();
+        startPosition.pose.orientation = targetObject.transform.rotation.To<FLU>();
+        homeCylinder.transform.position = targetObject.transform.position;
+        homeCylinder.transform.rotation = targetObject.transform.rotation;
+
     }
 
     private void ConfirmTargetPosition()
@@ -330,7 +380,30 @@ public class MoveToTarget : MonoBehaviour
         //}
     }
 
-    private IEnumerator HoldCameraStationaryInTurn()
+    public void BaseToStartPosition()
+    {
+        PublishWithDelay(goalTopicName, startPosition);
+        targetObject.transform.SetPositionAndRotation(homeCylinder.transform.position, homeCylinder.transform.rotation);
+        MoveConfirmToTarget();
+        moveBaseActionStatus = ActionStatus.IN_PROGRESS;
+
+    }
+
+    public void ReverseAndTurn()
+    {
+        StartCoroutine(ReverseAndTurnCoroutine());
+    }
+
+    private IEnumerator ReverseAndTurnCoroutine()
+    {
+        MoveRobotDistanceAction(-0.3f);
+        yield return new WaitForSeconds(2.0f);
+        TurnRobotAction(90f);
+        yield return new WaitForSeconds(2.0f);
+    }
+
+
+        private IEnumerator HoldCameraStationaryInTurn()
     {
         while (moveBaseActionStatus == ActionStatus.IN_PROGRESS)
         {
@@ -375,6 +448,13 @@ public class MoveToTarget : MonoBehaviour
         transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
     }
 
+    public void MoveTargetAndConfirmDistanceFromRobot(float distance)
+    {
+        targetObject.transform.SetPositionAndRotation(robotBaseLink.transform.position, robotBaseLink.transform.rotation);
+        targetObject.transform.Translate(0, 0, distance, Space.Self);
+        MoveConfirmToTarget();
+    }
+
     private void MoveTargetBackward()
     {
         Vector3 translation = new Vector3(0, 0, -moveTargetSpeed * Time.deltaTime);
@@ -393,10 +473,10 @@ public class MoveToTarget : MonoBehaviour
         // StartCoroutine(MoveRobotToTargetCoroutine(direction));
         // float targetDistance = Vector3.Distance(transform.position, robotBaseLink.transform.position);
         float targetDistance = robotBaseLink.transform.InverseTransformPoint(transform.position).z;
-        MoveRobotToTargetAction(targetDistance);
+        MoveRobotDistanceAction(targetDistance);
     }
 
-    private void MoveRobotToTargetAction(float distance)
+    public void MoveRobotDistanceAction(float distance)
     {
         MoveDistanceGoal moveDistanceGoal = new MoveDistanceGoal(distance);
         MoveDistanceActionGoal moveDistanceActionGoal = new MoveDistanceActionGoal();

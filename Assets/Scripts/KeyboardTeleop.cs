@@ -53,6 +53,15 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CentreCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""1abd1f2c-7a5d-42ae-b6b1-a9bd0901d9bf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +141,17 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                     ""action"": ""TiltCam"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9624c764-3a96-4063-aed8-b0315b3d34b9"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CentreCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -170,6 +190,24 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                     ""name"": ""StopRobot"",
                     ""type"": ""Button"",
                     ""id"": ""cfa7caaa-8866-4796-a0a6-2ce3cfcab016"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BaseToHome"",
+                    ""type"": ""Button"",
+                    ""id"": ""ec756706-69ac-4f22-8d9b-cd540064c276"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SetHomePosition"",
+                    ""type"": ""Button"",
+                    ""id"": ""01b06c4c-dc59-4b8b-976f-18849b40e88c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -273,6 +311,28 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""StopRobot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""999045a5-9632-4202-a68d-58227dd6313a"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BaseToHome"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bc24214f-d71a-48e8-b9fa-fb0d3d3b77f4"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetHomePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -471,12 +531,15 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         m_Common_ChangeActionSet = m_Common.FindAction("ChangeActionSet", throwIfNotFound: true);
         m_Common_TurnCam = m_Common.FindAction("TurnCam", throwIfNotFound: true);
         m_Common_TiltCam = m_Common.FindAction("TiltCam", throwIfNotFound: true);
+        m_Common_CentreCamera = m_Common.FindAction("CentreCamera", throwIfNotFound: true);
         // Keyboard
         m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
         m_Keyboard_GoToGoal = m_Keyboard.FindAction("GoToGoal", throwIfNotFound: true);
         m_Keyboard_MoveRobotForward = m_Keyboard.FindAction("MoveRobotForward", throwIfNotFound: true);
         m_Keyboard_TurnRobot = m_Keyboard.FindAction("TurnRobot", throwIfNotFound: true);
         m_Keyboard_StopRobot = m_Keyboard.FindAction("StopRobot", throwIfNotFound: true);
+        m_Keyboard_BaseToHome = m_Keyboard.FindAction("BaseToHome", throwIfNotFound: true);
+        m_Keyboard_SetHomePosition = m_Keyboard.FindAction("SetHomePosition", throwIfNotFound: true);
         // Arm
         m_Arm = asset.FindActionMap("Arm", throwIfNotFound: true);
         m_Arm_FBLR = m_Arm.FindAction("FBLR", throwIfNotFound: true);
@@ -546,6 +609,7 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
     private readonly InputAction m_Common_ChangeActionSet;
     private readonly InputAction m_Common_TurnCam;
     private readonly InputAction m_Common_TiltCam;
+    private readonly InputAction m_Common_CentreCamera;
     public struct CommonActions
     {
         private @KeyboardTeleop m_Wrapper;
@@ -553,6 +617,7 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         public InputAction @ChangeActionSet => m_Wrapper.m_Common_ChangeActionSet;
         public InputAction @TurnCam => m_Wrapper.m_Common_TurnCam;
         public InputAction @TiltCam => m_Wrapper.m_Common_TiltCam;
+        public InputAction @CentreCamera => m_Wrapper.m_Common_CentreCamera;
         public InputActionMap Get() { return m_Wrapper.m_Common; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -571,6 +636,9 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                 @TiltCam.started -= m_Wrapper.m_CommonActionsCallbackInterface.OnTiltCam;
                 @TiltCam.performed -= m_Wrapper.m_CommonActionsCallbackInterface.OnTiltCam;
                 @TiltCam.canceled -= m_Wrapper.m_CommonActionsCallbackInterface.OnTiltCam;
+                @CentreCamera.started -= m_Wrapper.m_CommonActionsCallbackInterface.OnCentreCamera;
+                @CentreCamera.performed -= m_Wrapper.m_CommonActionsCallbackInterface.OnCentreCamera;
+                @CentreCamera.canceled -= m_Wrapper.m_CommonActionsCallbackInterface.OnCentreCamera;
             }
             m_Wrapper.m_CommonActionsCallbackInterface = instance;
             if (instance != null)
@@ -584,6 +652,9 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                 @TiltCam.started += instance.OnTiltCam;
                 @TiltCam.performed += instance.OnTiltCam;
                 @TiltCam.canceled += instance.OnTiltCam;
+                @CentreCamera.started += instance.OnCentreCamera;
+                @CentreCamera.performed += instance.OnCentreCamera;
+                @CentreCamera.canceled += instance.OnCentreCamera;
             }
         }
     }
@@ -596,6 +667,8 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
     private readonly InputAction m_Keyboard_MoveRobotForward;
     private readonly InputAction m_Keyboard_TurnRobot;
     private readonly InputAction m_Keyboard_StopRobot;
+    private readonly InputAction m_Keyboard_BaseToHome;
+    private readonly InputAction m_Keyboard_SetHomePosition;
     public struct KeyboardActions
     {
         private @KeyboardTeleop m_Wrapper;
@@ -604,6 +677,8 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         public InputAction @MoveRobotForward => m_Wrapper.m_Keyboard_MoveRobotForward;
         public InputAction @TurnRobot => m_Wrapper.m_Keyboard_TurnRobot;
         public InputAction @StopRobot => m_Wrapper.m_Keyboard_StopRobot;
+        public InputAction @BaseToHome => m_Wrapper.m_Keyboard_BaseToHome;
+        public InputAction @SetHomePosition => m_Wrapper.m_Keyboard_SetHomePosition;
         public InputActionMap Get() { return m_Wrapper.m_Keyboard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -625,6 +700,12 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                 @StopRobot.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnStopRobot;
                 @StopRobot.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnStopRobot;
                 @StopRobot.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnStopRobot;
+                @BaseToHome.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnBaseToHome;
+                @BaseToHome.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnBaseToHome;
+                @BaseToHome.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnBaseToHome;
+                @SetHomePosition.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSetHomePosition;
+                @SetHomePosition.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSetHomePosition;
+                @SetHomePosition.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnSetHomePosition;
             }
             m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
             if (instance != null)
@@ -641,6 +722,12 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
                 @StopRobot.started += instance.OnStopRobot;
                 @StopRobot.performed += instance.OnStopRobot;
                 @StopRobot.canceled += instance.OnStopRobot;
+                @BaseToHome.started += instance.OnBaseToHome;
+                @BaseToHome.performed += instance.OnBaseToHome;
+                @BaseToHome.canceled += instance.OnBaseToHome;
+                @SetHomePosition.started += instance.OnSetHomePosition;
+                @SetHomePosition.performed += instance.OnSetHomePosition;
+                @SetHomePosition.canceled += instance.OnSetHomePosition;
             }
         }
     }
@@ -715,6 +802,7 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         void OnChangeActionSet(InputAction.CallbackContext context);
         void OnTurnCam(InputAction.CallbackContext context);
         void OnTiltCam(InputAction.CallbackContext context);
+        void OnCentreCamera(InputAction.CallbackContext context);
     }
     public interface IKeyboardActions
     {
@@ -722,6 +810,8 @@ public partial class @KeyboardTeleop : IInputActionCollection2, IDisposable
         void OnMoveRobotForward(InputAction.CallbackContext context);
         void OnTurnRobot(InputAction.CallbackContext context);
         void OnStopRobot(InputAction.CallbackContext context);
+        void OnBaseToHome(InputAction.CallbackContext context);
+        void OnSetHomePosition(InputAction.CallbackContext context);
     }
     public interface IArmActions
     {
